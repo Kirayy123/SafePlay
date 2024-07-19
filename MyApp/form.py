@@ -1,8 +1,11 @@
+import os
+
 from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from MyApp.models import Child, GeneralSetting, GameSetting, EducationSetting, \
     ChatSetting, SingleGameSetting, ArtSetting, FitnessSetting, Notification
+from ParentalNotification.settings import BASE_DIR
 
 
 class LoginForm(forms.Form):
@@ -114,8 +117,9 @@ class GeneralSettingForm(forms.ModelForm):
     #     ('bitch', 'bitch'), ('asshole', 'asshole'), ('freak', 'freak'), ('douche', 'douche'),
     #     ('fuck', 'fuck'), ('shit', 'shit'), ('piss', 'piss'), ('slut', 'slut'),
     # ]
-
-    with open("D:\\Python学习\\bad-words.txt", "r") as file:
+    file_path = os.path.join(BASE_DIR, 'static', 'bad-words.txt')
+    with open(file_path, "r") as file:
+    # with open("D:\\Python学习\\bad-words.txt", "r") as file:
         bad_words = [line.strip() for line in file if line.strip()]
     BAD_WORD_CHOICES = [(word, word) for word in bad_words]
 

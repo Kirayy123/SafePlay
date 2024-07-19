@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-rjl_@2@cv3izz!871fp(+3*yh!df*&1o95z(q6zn3k9x#po_)d
 DEBUG = True
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['kira301.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'kira301.pythonanywhere.com']
 
 # Application definition
 
