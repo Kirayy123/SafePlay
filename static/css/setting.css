@@ -1,0 +1,63 @@
+    .form-control.fixed-width {
+        width: 100%;
+        font-size: 22px;
+    }
+    .form-control.fixed-width {
+        width: 100%;
+        font-size: 22px;
+    }
+    .floating-nav {
+        position: fixed;
+        right: 20px;
+        top: 10%;
+        background-color: rgba(118, 72, 231, 0.32);
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 100;
+        overflow: hidden;
+        transition: height 0.3s ease;
+        height: 40px;
+    }
+    .floating-nav.expanded {
+        height: auto
+    }
+    .floating-nav a {
+        color: white;
+        text-decoration: none;
+        text-align: center;
+        display: block;
+        margin: 5px 0;
+        padding: 5px;
+        transition: background-color 0.3s ease;
+    }
+    .floating-nav a:hover {
+        background-color: rebeccapurple;
+    }
+    .nav-toggle {
+        cursor: pointer;
+        text-align: center;
+        color: white;
+        font-size: 16px;
+    }
+
+    .form-check-input {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+        margin-right: 5px;
+        align-items: center;
+    }
+    .form-check-label {
+        font-size: 24px;
+        vertical-align: middle;
+    }
+
+    .checkbox-wrapper {
+        max-height: 200px;
+        overflow-y: auto;
+        width: 100%;
+        background-color: rgba(248, 249, 250, 0.31);
+        border: 1px solid #ddd;
+        padding: 10px;
+    }
+

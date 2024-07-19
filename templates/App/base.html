@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block appbody %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3 sidebar bg-light">
+            {% url 'notification' child_id as notification_url %}
+            {% url 'history' child_id as history_url %}
+            {% url 'report' child_id as report_url %}
+            {% url 'setting' child_id as setting_url %}
+            {% url 'communication' child_id as communication_url %}
+            {% url 'bigbuddy' child_id 0 as bigbuddy_url %}
+
+{#            {% url 'ChatGPT_TRY' child_id as ChatGPT_TRY_url %}#}
+
+
+            <nav class="nav flex-column">
+                <a class="nav-link {% if request.path == notification_url %}active{% endif %}" href="{{ notification_url }}">
+                    <i class="fas fa-bell"></i> Notifications
+                </a>
+                <a class="nav-link {% if request.path == history_url %}active{% endif %}" href="{{ history_url }}">
+                    <i class="fas fa-history"></i> History
+                </a>
+                <a class="nav-link {% if request.path == report_url %}active{% endif %}" href="{{ report_url }}">
+                    <i class="fas fa-file-alt"></i> Report
+                </a>
+                <a class="nav-link {% if request.path == setting_url %}active{% endif %}" href="{{ setting_url }}">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+                <a class="nav-link {% if request.path == communication_url %}active{% endif %}" href="{{ communication_url }}">
+                    <i class="fas fa-comments"></i> Communication
+                </a>
+                <a class="nav-link {% if request.path == bigbuddy_url %}active{% endif %}" href="{{ bigbuddy_url }}">
+                    <i class="fas fa-robot"></i> BigBuddy
+                </a>
+
+{#                <a class="nav-link {% if request.path == ChatGPT_TRY_url %}active{% endif %}" href="{{ ChatGPT_TRY_url }}">#}
+{#                    <i class="fas fa-robot"></i> ChatGPT#}
+{#                </a>#}
+
+            </nav>
+        </div>
+
+        <div class="col-md-9" style="padding-top: 40px">
+            {% block content %}
+{#                mian content#}
+            {% endblock content %}
+        </div>
+    </div>
+</div>
+{% endblock %}

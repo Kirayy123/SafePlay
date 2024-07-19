@@ -1,0 +1,33 @@
+{% extends 'App/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Chat with ChatGPT
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 style="color: rebeccapurple; padding-bottom: 20px; font-weight: bolder">Chat with ChatGPT</h2>
+    <form id="chat-form" method="post" action="{% url 'ChatGPT_TRY' child_id %}">
+        {% csrf_token %}
+        <label for="userQuery" class="form-label">What else you want to know? Type Your Question there:</label>
+        <div class="row">
+            <div class="mb-3 col-11">
+                <input type="text" class="form-control" id="userQuery" name="userQuery" required>
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary">Send</button>
+            </div>
+        </div>
+    </form>
+    <div class="mt-3">
+        <h4>ChatGPT Response:</h4>
+        <div class="response-container"
+             style="height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+            <div><STRONG>{{ user_question }}</STRONG></div><br>
+            <div style="white-space: pre-wrap;">{{ respond|linebreaksbr }}</div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

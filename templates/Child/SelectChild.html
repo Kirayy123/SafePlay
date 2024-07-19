@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title_block %}
+    Select Child
+{% endblock %}
+{% block appbody %}
+<div class="container" style="padding-top: 40px">
+    <h2 style="color: rebeccapurple; font-weight: bolder">Urgent Notifications</h2>
+    <div class="row urgent-notifications-container">
+        {% if urgent_notification %}
+            {% for notification in urgent_notification %}
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h5 class="card-title" style="font-size: x-large"><strong>{{ notification.child.name }}</strong></h5>
+                            </div>
+                            <div class="col-6 text-end">
+                                <h6 class="card-subtitle mb-2 text-muted">{{ notification.time }}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-9">
+                                {% if notification.type == 1 %}
+                                    <p class="card-text">
+                                        <span style="font-weight: bold;color: #850000">Victim!</span>
+                                        {{ notification.text }}</p>
+                                {% elif  notification.type == 2%}
+                                    <p class="card-text">
+                                        <span style="font-weight: bold;color: #850000">Bully! </span>
+                                        {{ notification.text }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="col-3 text-end">
+                                <a href="{% url 'urgentprocess' notification.id 0 %}" class="btn" style="background-color: rebeccapurple; color: white;">
+                                    Click to Process</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No urgent messages</p>
+        {% endif %}
+    </div>
+
+    <h2 style="color: rebeccapurple; font-weight: bolder">Select Your Child</h2>
+    <div class="row">
+        {% for child in children %}
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4">
+                            <h5 class="card-title" style="font-size: x-large"><strong>{{ child.name }}</strong></h5>
+                        </div>
+                        <div class="col-4">
+                            <p class="card-text">Age: {{ child.get_age_display }}</p>
+                            <p class="card-text">Email: {{ child.email_address }}</p>
+                        </div>
+                        <div class="col-4 text-end">
+                            <a href="{% url 'notification' child.id %}" class="btn" style="background-color: rebeccapurple; color: white;">
+                                Select the Child</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'addchild' %}" class="btn" style="background-color: rebeccapurple; color: white;">
+        Add New Child</a>
+</div>
+
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const urgentContainer = document.querySelector('.urgent-notifications-container');
+
+    function refreshUrgentNotifications() {
+        fetch('{% url "fetch_urgent_notifications" %}')
+            .then(response => response.json())
+            .then(notifications => {
+                let content = '';
+                if (notifications.length > 0) {
+                    notifications.forEach(function(notification) {
+                        content += `
+                            <div class="col-12 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h5 class="card-title" style="font-size: x-large"><strong>${notification.child_name}</strong></h5>
+                                            </div>
+                                            <div class="col-6 text-end">
+                                                <h6 class="card-subtitle mb-2 text-muted">${notification.time}</h6>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <p class="card-text">
+                                                    ${notification.type == 1 ? '<span style="font-weight: bold; color: #850000;">Victim!</span>' : ''}
+                                                    ${notification.type == 2 ? '<span style="font-weight: bold; color: #850000;">Bully!</span>' : ''}
+                                                    ${notification.text}
+                                                </p>
+                                            </div>
+                                            <div class="col-3 text-end">
+                                                <a href="/urgentprocess/${notification.id}/0" class="btn" style="background-color: rebeccapurple; color: white;">
+                                                    Click to Process
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                    });
+                } else {
+                    content = '<p>No urgent messages</p>';
+                }
+                urgentContainer.innerHTML = content;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    setInterval(refreshUrgentNotifications, 5000); // Refresh urgent notifications every 5 seconds
+});
+</script>
+
+{% endblock %}

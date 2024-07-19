@@ -1,0 +1,90 @@
+{% extends 'App/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    BigBuddy
+{% endblock %}
+
+{% block content %}
+
+    <link href="{% static 'css/bigbuddy.css' %}" rel="stylesheet">
+
+<div class="container mt-4">
+    <h2 style="color: rebeccapurple; font-weight: bolder; padding-bottom: 40px;">
+        {% if fromtag == 1 %}
+            <a href="{% url 'setting' child_id %}"
+               style="color: rebeccapurple; text-decoration: none;"
+               onmouseover="this.style.color='#7648E747'"
+               onmouseout="this.style.color='rebeccapurple'">
+                <i class="fas fa-arrow-left"></i></a>
+            Know About BigBuddy
+        {% elif fromtag == 0 %}
+            Know About BigBuddy
+        {% endif %}</h2>
+
+
+    <div style="padding-bottom: 30px">
+    <p>Children are experiencing new forms of harassment in social virtual reality (VR), which parents often cannot supervise. We introduced "Big Buddy", an artificial intelligence (AI) moderator that protects children from harassment in social VR, endorsed by children and parents. After Big Buddy's intervention, children feel less upset and safer after being disrupted. Parents noticed the usefulness of Big Buddy and felt reassured, but continued to supervise.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-2" style="display: flex;justify-content: center; align-items: center;">
+            <img src="{% static 'image/bigbbudy.png' %}" alt="BigBuddy Logo" class="header-logo"
+             style="height: 240px; width: auto">
+        </div>
+        <div class="col-10">
+            <p><strong style="font-size: x-large; color: rebeccapurple;">BigBuddy</strong>
+                is a simulated AI supervision system designed for use in social virtual reality (Social VR) environments, especially for the safety and interaction supervision of child users. Big Buddy intervenes in disruptive behaviors that occur in social VR environments. For example, when someone breaks the rules of the game or harasses other players, Big Buddy takes actions such as resetting points, notifying the player's parents, or even removing the disruptor from the game.</p>
+        </div>
+    </div>
+
+    <div>
+        <h5 style="color: rebeccapurple; padding-top: 30px"><strong>Main Features</strong></h5>
+        <p><strong>Safety Enhancement: </strong>By intervening in inappropriate behavior in a timely manner, Big Buddy aims to create a safer virtual space for child users.<br>
+            <strong>Emotional Support: </strong>Studies have found that the presence of Big Buddy can reduce children's sadness when faced with provocative behavior and increase their sense of safety.</p>
+    </div>
+
+    <div>
+        <h5 style="color: rebeccapurple;"><strong>Child Perception</strong></h5>
+        <p>Children generally feel that they feel safer in the VR environment in the presence of Big Buddy. They have a positive attitude towards Big Buddy's interventions, especially when they see specific interventions (such as punishment measures).</p>
+    </div>
+
+    <div>
+        <h5 style="color: rebeccapurple;"><strong>Parents' Views</strong></h5>
+        <p>Parents believe that Big Buddy, as a supervision system, can provide a certain degree of peace of mind when they cannot directly supervise their children's virtual activities. Parents also expressed their hope to participate in the use and management of the supervision system and maintain a certain degree of supervision and control.</p>
+    </div>
+
+    <div>
+        <h5 style="color: rebeccapurple;"><strong>Example of the VR game scenario</strong></h5>
+        <div class="gallery">
+            <figure>
+                <img src="/static/image/bigbuddy_a.png" alt="Image 1">
+                <figcaption>(a)</figcaption>
+            </figure>
+            <figure>
+                <img src="/static/image/bigbuddy_b.png" alt="Image 2">
+                <figcaption>(b)</figcaption>
+            </figure>
+            <figure>
+                <img src="/static/image/bigbuddy_c.png" alt="Image 3">
+                <figcaption>(c)</figcaption>
+            </figure>
+            <figure>
+                <img src="/static/image/bigbuddy_d.png" alt="Image 4">
+                <figcaption>(d)</figcaption>
+            </figure>
+        </div>
+        <div> (a) Tower Building Game. (b) Provocative situation. (c) Big Buddy intervenes: points reset to 0, parents notified and exclusion. (d) Competitor appears punished.</div>
+    </div>
+    <div  style="padding-top: 30px">
+        <h5 style="color: rebeccapurple;"><strong>More about Bigbuddy (see references)</strong></h5>
+        <p><a href="{% url 'paper' 2 %}" target="_blank" style="font-size: small">
+            Big Buddy: A Simulated Embodied Moderating System to Mitigate Children’s Reaction to Provocative Situations within Social Virtual Reality </a><br>
+        <a href="{% url 'paper' 1 %}" target="_blank" style="font-size: small">
+            Big Buddy: Exploring Child Reactions and Parental Perceptions towards a Simulated Embodied Moderating System for Social Virtual Reality</a></p>
+    </div>
+</div>
+
+
+{% endblock %}
+

@@ -1,0 +1,30 @@
+.message-bubble {
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 20px;
+    background-color: lightgray;
+    max-width: 60%;
+    word-wrap: break-word;
+}
+
+.message-text {
+    font-size: small;
+    margin-bottom: 5px;
+}
+
+.message-time {
+    font-size: xx-small;
+    text-align: right;
+    color: #666;
+}
+
+.message-bubble.left {
+    margin-right: auto;
+    background-color: #e1f5fe;
+}
+
+.message-bubble.right {
+    margin-left: auto;
+    background-color: #dcedc8;
+}

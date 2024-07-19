@@ -1,0 +1,419 @@
+{% extends 'App/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Settings
+{% endblock %}
+
+{% block content %}
+<link href="{% static 'css/setting.css' %}" rel="stylesheet">
+
+<div class="floating-nav expanded">
+    <div class="nav-toggle">☰</div>
+    <a href="#general-settings" class="nav-link">General Settings</a>
+    <a href="#multiplayer-vr-games" class="nav-link">Multiplayer VR</a>
+    <a href="#one-player-vr-games" class="nav-link">One Player VR</a>
+    <a href="#education-vrs" class="nav-link">Education VR</a>
+    <a href="#chat-platforms" class="nav-link">Chat Platforms</a>
+    <a href="#creative-development-vrs" class="nav-link">Creative Development</a>
+    <a href="#health-fitness-vrs" class="nav-link">Health & Fitness</a>
+    <a href="#saveinfo" class="nav-link">Save Changes</a>
+</div>
+
+<div class="container mt-4">
+    <h2 style="color: rebeccapurple; padding-bottom: 40px; font-weight: bolder">
+        Settings</h2>
+    <form method="post" class="form-horizontal" style="font-size: large">
+        {% csrf_token %}
+        <div id="general-settings">
+            <h4 style="color: #3b1c88; padding-bottom: 20px; font-weight: bolder">
+                General Settings</h4>
+        </div>
+        <div class="row mb-3" >
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Daily Play Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ general_form.daily_playtime }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Notice about Urgent</label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ general_form.urgent_notification }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
+                Bad Word <br>(you don't want your children say in VR)</label>
+            <div class="col-sm-9">
+                <div class="row" style="margin-bottom: -10px; margin-left: 1px">
+                    <div class="col-12 mb-2">
+                        <input class="form-check-input" type="checkbox" id="selectAllBadWords">
+                        <label class="form-check-label" for="selectAllBadWords">
+                            Select All
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="checkbox-wrapper">
+                            {% for checkbox in general_form.bad_words_choices %}
+                                <div class="form-check form-check-inline"
+                                     style="font-size: 20px; width: 21%">
+                                    {{ checkbox.tag }}
+                                    {{ checkbox.choice_label }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-3">
+            </div>
+            <div class="col-sm-9">
+                <div class="row">
+                    <label class="col-4 d-flex align-items-center"
+                           style="font-size: 24px">
+                        Custom bad words: </label>
+                    <div class="col-2 d-flex align-items-center" style="font-size: 24px">
+                        {{ general_form.custom_bad_words }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="multiplayer-vr-games">
+            <h5 style="color: #3b1c88; padding-top: 20px; padding-bottom: 20px; font-weight: bolder">
+                Settings for Multiplayer VR Games (e.g. RecRoom, VRChat ...) </h5>
+        </div>
+        <div class="row mb-3" >
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Daily Play Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ game_form.game_daily_playtime }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Break Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                <span style="margin-right: 10px;">Break</span>
+                {{ game_form.game_break_time }}
+                <label class="col-form-label" style="margin-left: 10px; margin-right: 10px; font-size: 24px">
+                    minutes</label>
+                <span style="margin-right: 10px;font-size: 24px">
+                    every</span>
+                {{ game_form.game_break_duration_time }}
+                <label class="col-form-label" style="margin-left: 10px; font-size: 24px">
+                    minutes</label>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3">
+                <label class="col-form-label" style="font-weight: bold;font-size: 24px">
+                    Visible of BigBuddy</label><br>
+                <a href="{% url 'bigbuddy' child_id 1 %}"
+                           style="color: rebeccapurple;font-size: 20px"
+                           onmouseover="this.style.color='rgba(121,78,246,0.74)'"
+                           onmouseout="this.style.color='#3B1C88FF'">
+                        (know about BigBuddy)</a>
+            </div>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ game_form.game_presence_of_ai }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
+                Dealing with Bully</label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ game_form.game_bully_action }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
+                Dealing with Victim</label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ game_form.game_victim_action }}
+            </div>
+        </div>
+
+        <div id="one-player-vr-games">
+            <h5 style="color: #3b1c88; padding-top: 20px; padding-bottom: 20px; font-weight: bolder">
+                Settings for One Player VR Games (e.g. Wonderglade, Moss)</h5>
+        </div>
+        <div class="row mb-3" >
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Daily Play Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ sgame_form.sgame_daily_playtime }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Break Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                <span style="margin-right: 10px;">Break</span>
+                {{ sgame_form.sgame_break_time }}
+                <label class="col-form-label" style="margin-left: 10px; margin-right: 10px; font-size: 24px">
+                    minutes</label>
+                <span style="margin-right: 10px;font-size: 24px">
+                    every</span>
+                {{ sgame_form.sgame_break_duration_time }}
+                <label class="col-form-label" style="margin-left: 10px; font-size: 24px">
+                    minutes</label>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3">
+                <label class="col-form-label" style="font-weight: bold;font-size: 24px">
+                    Visible of BigBuddy</label><br>
+                <a href="{% url 'bigbuddy' child_id 1 %}"
+                           style="color: rebeccapurple;font-size: 20px"
+                           onmouseover="this.style.color='rgba(121,78,246,0.74)'"
+                           onmouseout="this.style.color='#3B1C88FF'">
+                        (know about BigBuddy)</a>
+            </div>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ sgame_form.sgame_presence_of_ai }}
+            </div>
+        </div>
+
+
+        <div id="education-vrs">
+            <h5 style="color: #3b1c88; padding-top: 20px; padding-bottom: 20px; font-weight: bolder">
+                Settings for Education VRs (e.g. Engage, VirBELA ...) </h5>
+        </div>
+        <div class="row mb-3" >
+            <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
+                Daily Play Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ education_form.edu_daily_playtime }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Break Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                <span style="margin-right: 10px;">Break</span>
+                {{ education_form.edu_break_time }}
+                <label class="col-form-label" style="margin-left: 10px; margin-right: 10px; font-size: 24px">
+                    minutes</label>
+                <span style="margin-right: 10px;font-size: 24px">
+                    every</span>
+                {{ education_form.edu_break_duration_time }}
+                <label class="col-form-label" style="margin-left: 10px; font-size: 24px">
+                    minutes</label>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3">
+                <label class="col-form-label" style="font-weight: bold;font-size: 24px">
+                    Visible of BigBuddy</label><br>
+                <a href="{% url 'bigbuddy' child_id 1 %}"
+                           style="color: rebeccapurple;font-size: 20px"
+                           onmouseover="this.style.color='rgba(121,78,246,0.74)'"
+                           onmouseout="this.style.color='#3B1C88FF'">
+                        (know about BigBuddy)</a>
+            </div>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ education_form.edu_presence_of_ai }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
+                Dealing with Bully</label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ education_form.edu_bully_action }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
+                Dealing with Victim</label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ education_form.edu_victim_action }}
+            </div>
+        </div>
+
+        <div id="chat-platforms">
+            <h5 style="color: #3b1c88; padding-top: 20px; padding-bottom: 20px; font-weight: bolder">
+                Settings for Chat Platforms (e.g. FacebookHorizon, AltspaceVR ...) </h5>
+        </div>
+        <div class="row mb-3" >
+            <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
+                Daily Play Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ chat_form.chat_daily_playtime }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
+                Break Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                <span style="margin-right: 10px;font-size: 24px">Break</span>
+                {{ chat_form.chat_break_time }}
+                <label class="col-form-label" style="margin-left: 10px; margin-right: 10px;font-size: 24px">
+                    minutes</label>
+                <span style="margin-right: 10px;font-size: 24px">
+                    every</span>
+                {{ chat_form.chat_break_duration_time }}
+                <label class="col-form-label" style="margin-left: 10px;font-size: 24px">
+                    minutes</label>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3">
+                <label class="col-form-label" style="font-weight: bold;font-size: 24px">
+                    Visible of BigBuddy</label><br>
+                <a href="{% url 'bigbuddy' child_id 1 %}"
+                           style="color: rebeccapurple;font-size: 20px"
+                           onmouseover="this.style.color='rgba(121,78,246,0.74)'"
+                           onmouseout="this.style.color='#3B1C88FF'">
+                        (know about BigBuddy)</a>
+            </div>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ chat_form.chat_presence_of_ai }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
+                Dealing with Bully</label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ chat_form.chat_bully_action }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
+                Dealing with Victim</label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ chat_form.chat_victim_action }}
+            </div>
+        </div>
+
+
+        <div id="creative-development-vrs">
+            <h5 style="color: #3b1c88; padding-top: 20px; padding-bottom: 20px; font-weight: bolder">
+                Settings for Creative Development VRs (e.g. Tilt Brush by Google ...) </h5>
+        </div>
+        <div class="row mb-3" >
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Daily Play Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ art_form.art_daily_playtime }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Break Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                <span style="margin-right: 10px;">Break</span>
+                {{ art_form.art_break_time }}
+                <label class="col-form-label" style="margin-left: 10px; margin-right: 10px; font-size: 24px">
+                    minutes</label>
+                <span style="margin-right: 10px;font-size: 24px">
+                    every</span>
+                {{ art_form.art_break_duration_time }}
+                <label class="col-form-label" style="margin-left: 10px; font-size: 24px">
+                    minutes</label>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3">
+                <label class="col-form-label" style="font-weight: bold;font-size: 24px">
+                    Visible of BigBuddy</label><br>
+                <a href="{% url 'bigbuddy' child_id 1 %}"
+                           style="color: rebeccapurple;font-size: 20px"
+                           onmouseover="this.style.color='rgba(121,78,246,0.74)'"
+                           onmouseout="this.style.color='#3B1C88FF'">
+                        (know about BigBuddy)</a>
+            </div>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ art_form.art_presence_of_ai }}
+            </div>
+        </div>
+
+
+        <div id="health-fitness-vrs">
+            <h5 style="color: #3b1c88; padding-top: 20px; padding-bottom: 20px; font-weight: bolder">
+            Settings for Health and Fitness VRs (e.g. FitXR, ICAROS ...) </h5>
+        </div>
+        <div class="row mb-3" >
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Daily Play Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ fitness_form.fitness_daily_playtime }}
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Break Time </label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                <span style="margin-right: 10px;">Break</span>
+                {{ fitness_form.fitness_break_time }}
+                <label class="col-form-label" style="margin-left: 10px; margin-right: 10px; font-size: 24px">
+                    minutes</label>
+                <span style="margin-right: 10px;font-size: 24px">
+                    every</span>
+                {{ fitness_form.fitness_break_duration_time }}
+                <label class="col-form-label" style="margin-left: 10px; font-size: 24px">
+                    minutes</label>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-sm-3">
+                <label class="col-form-label" style="font-weight: bold;font-size: 24px">
+                    Visible of BigBuddy</label><br>
+                <a href="{% url 'bigbuddy' child_id 1 %}"
+                           style="color: rebeccapurple;font-size: 20px"
+                           onmouseover="this.style.color='rgba(121,78,246,0.74)'"
+                           onmouseout="this.style.color='#3B1C88FF'">
+                        (know about BigBuddy)</a>
+            </div>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                {{ fitness_form.fitness_presence_of_ai }}
+            </div>
+        </div>
+
+        <div class="row mb-3" id="saveinfo">
+            <div class="offset-sm-4 col-sm-9" style="padding-top: 40px">
+                <button type="submit" class="btn" style="background-color: rebeccapurple; color: white;">
+                    Save Settings</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+            const selectAllCheckbox = document.getElementById('selectAllBadWords');
+            const badWordCheckboxes = document.querySelectorAll('[name="bad_words_choices"]');
+
+            selectAllCheckbox.addEventListener('change', function() {
+                for (const checkbox of badWordCheckboxes) {
+                    checkbox.checked = this.checked;
+                }
+            });
+        });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const nav = document.querySelector('.floating-nav');
+        const toggle = document.querySelector('.nav-toggle');
+
+        toggle.addEventListener('click', function() {
+            nav.classList.toggle('expanded');
+        });
+
+        document.querySelectorAll('.floating-nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+</script>
+
+{% endblock %}

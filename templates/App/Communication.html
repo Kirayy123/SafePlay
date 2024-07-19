@@ -1,0 +1,56 @@
+{% extends 'App/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Communication
+{% endblock %}
+
+{% block content %}
+    <link href="{% static 'css/communication.css' %}" rel="stylesheet">
+<div class="container mt-4">
+    <h2 style="color: rebeccapurple; padding-bottom: 40px; font-weight: bolder">
+        Chat with Your Child</h2>
+    <div class="message-container" style="height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+        {% for message in messages %}
+        <div class="{% if message.tag == 0 %}message-bubble left{% else %}message-bubble right{% endif %}">
+            <div class="message-text">{{ message.text }}</div>
+            <div class="message-time">{{ message.time|date:"Y-m-d H:i" }}</div>
+        </div>
+        {% endfor %}
+        <div id="end-of-messages"></div>
+    </div>
+    <form method="post" action="{% url 'communication' child_id %}" style="display: flex; justify-content: center;">
+        {% csrf_token %}
+        <textarea name="message" class="form-control" rows="2"></textarea>
+        <button type="submit" class="btn" style="background-color: rebeccapurple; color: white;">
+            Send</button>
+    </form>
+</div>
+
+<script>
+    window.onload = function() {
+        var messageContainer = document.querySelector('.message-container');
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+
+        function refreshMessages() {
+            fetch('{% url "fetch_messages" child_id %}')  // Assuming 'fetch_messages' is the name of your Django URL pattern for the AJAX view
+                .then(response => response.json())
+                .then(data => {
+                    let content = '';
+                    data.messages.forEach(function(message) {
+                        let messageClass = message.tag == 0 ? 'message-bubble left' : 'message-bubble right';
+                        content += '<div class="' + messageClass + '"><div class="message-text">' + message.text + '</div><div class="message-time">' + message.time + '</div></div>';
+                    });
+                    messageContainer.innerHTML = content;
+                    {#messageContainer.scrollTop = messageContainer.scrollHeight;#}
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        setInterval(refreshMessages, 1000); // Refresh messages every second
+    }
+</script>
+
+
+
+{% endblock %}

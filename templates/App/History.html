@@ -1,0 +1,117 @@
+{% extends 'App/base.html' %}
+{% load static %}
+{% block title_block %}
+    History
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2 style="color: rebeccapurple; padding-bottom: 40px; font-weight: bolder">
+        Game History</h2>
+
+    <form method="get" class="row align-items-center mb-4">
+        <div class="col-auto">
+            <label for="filter-date" class="form-label" style="font-weight: bolder">Filter by Date:</label>
+        </div>
+        <div class="col-auto">
+            <input type="date" id="filter-date" name="date" class="form-control"
+                   value="{{ request.GET.date|default_if_none:'' }}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn" style="background-color: rebeccapurple; color: white;">
+                Filter</button>
+            <button type="button" class="btn" style="background-color: rgba(86,86,86,0.74); color: white;" onclick="location.href='{% url 'history' child_id %}'">
+                Reset</button>
+        </div>
+    </form>
+
+    {% regroup gamesessions by start_time.date as date_list %}
+    {% for date in date_list %}
+        <h5><strong>{{ date.grouper }}</strong></h5>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Time Interval</th>
+                <th scope="col">Game Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for gamesession in date.list %}
+                <tr>
+                    <td>From {{ gamesession.start_time|date:"H:i" }} to {{ gamesession.end_time|date:"H:i" }}</td>
+                    <td>{{ gamesession.game_name }}</td>
+                    <td>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#historyDetailModal{{ gamesession.id }}"
+                           style="color: rebeccapurple;">View Details</a>
+                    </td>
+                </tr>
+
+                <!-- modal for each history -->
+                <div class="modal fade" id="historyDetailModal{{ gamesession.id }}" tabindex="-1"
+                     aria-labelledby="historyDetailModalLabel{{ gamesession.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" style="height: auto">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="historyDetailModalLabel{{ gamesession.id }}">History Detail</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <h3><strong>{{ gamesession.child.name }}</strong></h3>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <h5><strong>{{ gamesession.game_name }} | {{ gamesession.get_game_type_display }}</strong></h5>
+                                        <div class="row" style="margin-top: 25px">
+                                            <div class="col-md-3">
+                                                <p><strong>Satisfaction: </strong></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="star-rating">
+                                                    {% for _ in gamesession.stars %}
+                                                        <i class="fas fa-star"></i>
+                                                    {% endfor %}
+                                                    {% for _ in gamesession.non_stars %}
+                                                        <i class="far fa-star"></i>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p><strong>Play Time: </strong>{{ gamesession.start_time|date:"d/m/Y" }},
+                                            {{ gamesession.start_time|date:"H:i" }}-{{ gamesession.end_time|date:"H:i"}}</p>
+                                        <p><strong>Durations: </strong>{{ gamesession.durations}}</p>
+                                        <p><strong>Video link: </strong>
+                                            <a href="{{ gamesession.video_url }}" target="_blank" style="color: #4c39a6">
+                                                {{ gamesession.video_url }}</a></p>
+                                        {% if gamesession.game_type == 1 or gamesession.game_type == 3 or gamesession.game_type == 4 %}
+                                            <p><strong>Play with: </strong>{{ gamesession.players }}</p>
+                                            <p><strong>Bully: </strong>
+                                                {% if gamesession.bully_num == 0 %}
+                                                    No bully happens.
+                                                {% else %}
+                                                    {{ gamesession.bully_num }} bully happens, {{ gamesession.bully_info }}.
+                                                {% endif %}
+                                            </p>
+                                            <p><strong>Victim: </strong>
+                                                {% if gamesession.victim_num == 0 %}
+                                                    No victim situations.
+                                                {% else %}
+                                                    {{ gamesession.victim_num }} victim happens, {{ gamesession.victim_info }}.
+                                                {% endif %}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'App/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Urgent Notification Process
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 style="color: rebeccapurple; font-weight: bolder; padding-bottom: 20px;">
+        {% if fromtag == 1 %}
+        <a href="{% url 'notification' child_id %}"
+           style="color: rebeccapurple; text-decoration: none;"
+           onmouseover="this.style.color='#7648E747'"
+           onmouseout="this.style.color='rebeccapurple'">
+            <i class="fas fa-arrow-left"></i></a>
+        {% elif fromtag == 0 %}
+        <a href="{% url 'childselect' %}"
+           style="color: rebeccapurple; text-decoration: none;"
+           onmouseover="this.style.color='#7648E747'"
+           onmouseout="this.style.color='rebeccapurple'">
+            <i class="fas fa-arrow-left"></i></a>
+        {% endif %}
+        Process Notification</h2>
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="card-title" style="font-weight: bolder">{{ notification.child.name }} |
+                    {{ notification.get_type_display }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ notification.time|date:"Y-m-d H:i:s" }}</h6>
+            </div>
+            <p class="card-text mb-4">{{ notification.text }}</p>
+            <form method="post" style="font-size: small">
+                {% csrf_token %}
+                <div class="row align-items-center">
+                    <div class="col-3">
+                        <label for="measurement_choices">
+                            <strong>Select Measurements:</strong></label>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="col-6">
+                        {% if notification.type == 2 %}
+                            {{ form.bmeasurement_choices }}
+                        {% else %}
+                            {{ form.vmeasurement_choices }}
+                        {% endif %}
+                    </div>
+
+                    <div class="col-3 text-right">
+                        <button type="submit" class="btn" style="background-color: rebeccapurple; color: white;">Submit</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-5 d-flex align-items-center">
+            <h5><strong>Learn More about Bullying</strong></h5>
+        </div>
+        <div class="col-6">
+            {% for text in texts %}
+                <div class="harm-section mt-4">
+                    <h5 style="color: rebeccapurple;">
+                        <a href="#" class="text-title" data-bs-toggle="modal"
+                           data-bs-target="#textModal{{ forloop.counter }}"
+                           style="color: rebeccapurple; text-decoration: none;
+                           transition: color 0.3s;"
+                           onmouseover="this.style.textDecoration='underline';"
+                           onmouseout="this.style.textDecoration='none'; this.style.color='rebeccapurple';">
+                            {{ text.title }}
+                        </a>
+                    </h5>
+                </div>
+
+                <!-- modal for each text -->
+                <div class="modal fade" id="textModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="textModalLabel{{ forloop.counter }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="textModalLabel{{ forloop.counter }}">{{ text.title }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {{ text.body|linebreaks }}
+                                {% if text.urls.all %}
+                                    <div class="row">
+                                        <div class="col-3">
+                                            Refered Papers:
+                                        </div>
+                                        <div class="col-9 align-left">
+                                            <ul>
+                                                {% for url in text.urls.all %}
+                                                    <li><a href="{{ url.url }}" target="_blank">{{ url.paper }}</a></li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

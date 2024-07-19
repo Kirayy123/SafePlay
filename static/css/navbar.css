@@ -1,0 +1,26 @@
+.sidebar {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    border-right: 1px solid rgba(118, 72, 231, 0.13);
+    height: 100vh;
+}
+
+.nav-link {
+    color: #3b1c88;
+    margin: 10px 20px;
+    font-weight: 800;
+    font-size: large;
+}
+
+.nav-link:hover {
+    background-color: rgba(118, 72, 231, 0.28);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.nav-link.active {
+    color: #fff;
+    background-color: rebeccapurple;
+    border-radius: 5px;
+    padding: 10px;
+}

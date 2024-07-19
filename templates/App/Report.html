@@ -1,0 +1,175 @@
+{% extends 'App/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Report
+{% endblock %}
+
+{% block content %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/chart.js' %}"></script>
+
+<div class="container mt-4">
+    <h2 style="color: rebeccapurple; padding-bottom: 20px; font-weight: bolder">
+        Report
+    </h2>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#daily" onclick="showDailyCounts()">Daily Chart</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#weekly" onclick="showWeeklyCounts()">Weekly Chart</a>
+        </li>
+    </ul>
+
+    <div class="tab-content" style="padding-top: 20px">
+        <div id="daily" class="tab-pane fade show active">
+            <canvas id="dailyChart" width="800" height="400"></canvas>
+            <div id="dailyCounts" class="row" style="padding-top: 20px; padding-bottom: 30px">
+                <div class="col-1"></div>
+                <div class="col-5 d-flex justify-content-between align-items-center">
+                    <p style="color: rebeccapurple; font-weight: bold">
+                        Bully Instances: {{ daily_bully_count }}
+                    </p>
+                </div>
+                <div class="col-6 d-flex justify-content-between align-items-center">
+                    <p style="color: rebeccapurple; font-weight: bold">
+                        Victim Instances: {{ daily_victim_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="weekly" class="tab-pane fade">
+            <canvas id="weeklyChart" width="800" height="400"></canvas>
+            <div id="weeklyCounts" class="row" style="padding-top: 20px; padding-bottom: 30px">
+                <div class="col-1"></div>
+                <div class="col-5 d-flex justify-content-between align-items-center">
+                    <p style="color: rebeccapurple; font-weight: bold">
+                        Bully Instances: {{ weekly_bully_count }}</p>
+                </div>
+                <div class="col-6 d-flex justify-content-between align-items-center">
+                    <p style="color: rebeccapurple; font-weight: bold">
+                        Victim Instances: {{ weekly_victim_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <hr class="my-separator" style="border-top: 2px solid #ccc; margin: 0;">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6 d-flex align-items-center">
+            <h4><strong>Learn More about Bullying</strong></h4>
+        </div>
+        <div class="col-6">
+            {% for text in texts %}
+                <div class="harm-section mt-4">
+                    <h5 style="color: rebeccapurple;">
+                        <a href="#" class="text-title" data-bs-toggle="modal"
+                           data-bs-target="#textModal{{ forloop.counter }}"
+                           style="color: rebeccapurple; text-decoration: none;
+                           transition: color 0.3s;"
+                           onmouseover="this.style.textDecoration='underline';"
+                           onmouseout="this.style.textDecoration='none'; this.style.color='rebeccapurple';">
+                            {{ text.title }}
+                        </a>
+                    </h5>
+                </div>
+
+                <!-- modal for each text -->
+                <div class="modal fade" id="textModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="textModalLabel{{ forloop.counter }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="textModalLabel{{ forloop.counter }}">{{ text.title }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {{ text.body|linebreaks }}
+                                {% if text.urls.all %}
+                                    <div class="row">
+                                        <div class="col-3">
+                                            Refered Papers:
+                                        </div>
+                                        <div class="col-9 align-left">
+                                            <ul>
+                                                {% for url in text.urls.all %}
+                                                    <li><a href="{{ url.url }}" target="_blank">{{ url.paper }}</a></li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <form id="chat-form">
+            {% csrf_token %}
+            <label for="userQuery" class="form-label">What else you want to know? Type Your Question there:</label>
+            <div class="row">
+                <div class="mb-3 col-11">
+                    <input type="text" class="form-control" id="userQuery" name="userQuery" required>
+                </div>
+                <div class="col-1">
+                    <button type="button" class="btn" onclick="sendQuestion();"
+                            style="background-color: rebeccapurple; color: white;">
+                        Send</button>
+                </div>
+            </div>
+        </form>
+        <div class="mt-3">
+            <p>Response from ChatGPT:</p>
+            <div class="response-container"
+                 style="height: 400px; overflow-y: auto; border: 1px solid #ccc;">
+                <div id="chatResponse"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <script>
+        var dailyChartData = {{ daily_chart_data|safe }};
+        var weeklyChartData = {{ weekly_chart_data|safe }};
+
+        function sendQuestion() {
+           var userQuery = document.getElementById('userQuery').value;
+           var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+           var endpoint = "{% url 'report' child_id %}";
+           var data = {
+               'userQuery': userQuery,
+               'csrfmiddlewaretoken': csrfToken
+           };
+
+           document.getElementById('chatResponse').innerHTML = '<div style="color: gray; text-align: center;">Please wait for the answer...</div>';
+
+           fetch(endpoint, {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/x-www-form-urlencoded;',
+               },
+               body: new URLSearchParams(data)
+           }).then(response => response.json())
+             .then(data => {
+                 // Update answer from ChatGPT
+                 document.getElementById('chatResponse').innerHTML = data.respond.replace(/\n/g, '<br>');
+             }).catch(error => {
+                 document.getElementById('chatResponse').innerHTML = '<div style="color: red; text-align: center;">加载失败，请重试。</div>';
+             });
+        }
+
+    </script>
+
+{% endblock %}

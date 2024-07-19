@@ -1,0 +1,197 @@
+{% extends 'App/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    Notification
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 style="color: rebeccapurple; font-weight: bolder; padding-bottom: 40px;">Notifications from the VR World</h2>
+
+    <div style="padding-bottom: 20px">
+        {% if gameurl %}
+            <h5><strong>Your child is in the game, </strong>
+                <a href="{{ gameurl }}" target="_blank" style="color: rebeccapurple;">
+                click to enter game activity
+                </a>
+            </h5>
+        {% else %}
+            <h5><strong>Your child is not in the game now.</strong></h5>
+        {% endif %}
+    </div>
+
+    <select id="notification-filter" class="form-select mb-4">
+        <option value="4">All Notifications</option>
+        <option value="0" {% if current_type == "0" or current_type == "3" %}selected{% endif %}>Normal</option>
+        <option value="1" {% if current_type == "1" %}selected{% endif %}>Victim</option>
+        <option value="2" {% if current_type == "2" %}selected{% endif %}>Bully</option>
+    </select>
+
+    <!-- roll container -->
+    <div style="height: 600px; overflow-y: auto; border: 1px solid #ccc; padding: 15px;">
+        {% for notification in notifications %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <h5 class="card-title"><strong>{{ notification.child.name }}</strong></h5>
+                        </div>
+                        <div class="col-6 text-end">
+                            <h6 class="card-subtitle mb-2 text-muted">{{ notification.time|date:"Y-m-d H:i" }}</h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <p class="card-text">
+                                {% if notification.type == 1 %}
+                                    <span style="font-weight: bold; color: #850000;">Victim!</span>
+                                {% elif notification.type == 2 %}
+                                    <span style="font-weight: bold; color: #850000;">Bully!</span>
+                                {% else %}
+                                    Normal Status.
+                                {% endif %}
+                                {% if notification.type == 0 %}
+                                    {{ notification.text }}
+                                {% else %}
+                                    {{ notification.text }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-4 text-end">
+                            {% if notification.type != 3 and notification.type != 0 and notification.processed == False %}
+                                <a href="{% url 'urgentprocess' notification.id 1 %}" class="btn" style="background-color: rebeccapurple; color: white;">
+                                    Click to Process
+                                </a>
+                            {% elif notification.type != 3 and notification.type != 0 and notification.processed == True %}
+                                <p style="color: gray">Processed</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{#<script>#}
+{#    document.getElementById('notification-filter').addEventListener('change', function() {#}
+{#        var newUrl = new URL(window.location.href);#}
+{#        newUrl.searchParams.set('type', this.value); // update query#}
+{#        window.location.href = newUrl.href; // to new URL#}
+{#    });#}
+{#</script>#}
+
+{#    <script>#}
+{#document.addEventListener('DOMContentLoaded', function() {#}
+{#    const notificationContainer = document.querySelector('div[style="height: 600px; overflow-y: auto; border: 1px solid #ccc; padding: 15px;"]');#}
+{##}
+{#    function refreshNotifications() {#}
+{#        fetch('{% url "fetch_notifications" child_id %}')#}
+{#            .then(response => response.json())#}
+{#            .then(data => {#}
+{#                let content = '';#}
+{#                data.notifications.forEach(function(notification) {#}
+{#                    content += `<div class="card mb-3">#}
+{#                            <div class="card-body">#}
+{#                                <div class="row">#}
+{#                                    <div class="col-6">#}
+{#                                        <h5 class="card-title"><strong>${notification.name}</strong></h5>#}
+{#                                    </div>#}
+{#                                    <div class="col-6 text-end">#}
+{#                                        <h6 class="card-subtitle mb-2 text-muted">${notification.time}</h6>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                                <div class="row">#}
+{#                                    <div class="col-8">#}
+{#                                        <p class="card-text">#}
+{#                                            ${notification.type == 1 ? '<span style="font-weight: bold; color: #850000;">Victim!</span>' : ''}#}
+{#                                            ${notification.type == 2 ? '<span style="font-weight: bold; color: #850000;">Bully!</span>' : 'Normal Status.'}#}
+{#                                            ${notification.text}#}
+{#                                        </p>#}
+{#                                    </div>#}
+{#                                    <div class="col-4 text-end">#}
+{#                                        ${(notification.type == 1 || notification.type == 2) && !notification.processed ?#}
+{#                                            `<a href="/urgentprocess/${notification.id}/1" class="btn" style="background-color: rebeccapurple; color: white;">Click to Process</a>` :#}
+{#                                            (notification.processed ? '<p style="color: gray">Processed</p>' : '')}#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>`;#}
+{#                    });#}
+{#                notificationContainer.innerHTML = content;#}
+{#            })#}
+{#            .catch(error => console.error('Error:', error));#}
+{#    }#}
+{##}
+{#    setInterval(refreshNotifications, 5000); // Refresh notifications every second#}
+{#});#}
+{#</script>#}
+
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const notificationContainer = document.querySelector('div[style="height: 600px; overflow-y: auto; border: 1px solid #ccc; padding: 15px;"]');
+    const gameUrlContainer = document.querySelector('div[style="padding-bottom: 20px"]');
+
+    function refreshNotifications() {
+        fetch('{% url "fetch_notifications" child_id %}')
+            .then(response => response.json())
+            .then(data => {
+                updateGameUrl(data.gameurl);
+                updateNotifications(data.notifications);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function updateGameUrl(gameurl) {
+        let gameContent = '';
+        if (gameurl) {
+            gameContent = `<h5><strong>Your child is in the game, </strong>
+                           <a href="${gameurl}" target="_blank" style="color: rebeccapurple;">
+                           click to enter game activity</a></h5>`;
+        } else {
+            gameContent = `<h5><strong>Your child is not in the game now.</strong></h5>`;
+        }
+        gameUrlContainer.innerHTML = gameContent;
+    }
+
+    function updateNotifications(notifications) {
+        let content = '';
+        notifications.forEach(function(notification) {
+            content += `<div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h5 class="card-title"><strong>${notification.name}</strong></h5>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <h6 class="card-subtitle mb-2 text-muted">${notification.time}</h6>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <p class="card-text">
+                                            ${notification.type == 1 ? '<span style="font-weight: bold; color: #850000;">Victim!</span>' : ''}
+                                            ${notification.type == 2 ? '<span style="font-weight: bold; color: #850000;">Bully!</span>' : 'Normal Status.'}
+                                            ${notification.text}
+                                        </p>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        ${(notification.type == 1 || notification.type == 2) && !notification.processed ?
+                                            `<a href="/urgentprocess/${notification.id}/1" class="btn" style="background-color: rebeccapurple; color: white;">Click to Process</a>` :
+                                            (notification.processed ? '<p style="color: gray">Processed</p>' : '')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+        });
+        notificationContainer.innerHTML = content;
+    }
+
+    setInterval(refreshNotifications, 5000); // Refresh notifications every 5 seconds
+});
+</script>
+
+
+{% endblock %}

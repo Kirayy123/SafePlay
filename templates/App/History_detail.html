@@ -1,0 +1,54 @@
+{% extends 'App/base.html' %}
+{% load static %}
+
+{% block title_block %}
+    History Detail
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 style="color: rebeccapurple; padding-bottom: 40px; font-weight: bolder">
+        <a href="{% url 'history' gamesession.child_id %}"
+           style="color: rebeccapurple; text-decoration: none;"
+           onmouseover="this.style.color='#7648E747'"
+           onmouseout="this.style.color='rebeccapurple'">
+            <i class="fas fa-arrow-left"></i></a>
+        History Detail
+    </h2>
+
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <h3><strong>{{ gamesession.child.name }}</strong></h3>
+        </div>
+        <div class="col-md-4">
+            <h5><strong>{{ gamesession.game_name }}</strong></h5>
+            <p><strong>Start Time: </strong>{{ gamesession.start_time|date:"d M Y H:i" }}</p>
+            <p><strong>End Time: </strong>{{ gamesession.end_time|date:"d M Y H:i" }}</p>
+        </div>
+        <div class="col-md-4">
+            <h5><strong>Satisfaction</strong></h5>
+            <div class="star-rating">
+                {% for _ in stars %}
+                    <i class="fas fa-star"></i>
+                {% endfor %}
+                {% for _ in non_stars %}
+                    <i class="far fa-star"></i>
+                {% endfor %}
+            </div>
+        </div>
+        <div>
+            <p><strong>Play with: </strong>{{ gamesession.players }}</p>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <a href="{{ gamesession.video_url }}" target="_blank">Watch video of game duration on YouTube</a>
+{#        <div class="col-12">#}
+{#            <video controls preload="auto" width="100%">#}
+{#                <source src="{{ gamesession.video.url }}" type="video/mp4">#}
+{#                Your browser does not support the video tag.#}
+{#            </video>#}
+{#        </div>#}
+    </div>
+</div>
+{% endblock %}
