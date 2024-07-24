@@ -426,10 +426,11 @@ def Report(request, child_id):
 
     if request.method == 'POST':
         user_question = request.POST.get('userQuery')
-        client = OpenAI(
-            api_key="sk-x9XIbhuccUypiLMq3mqfCiyBqnV0bExnkwUkz3eRxABfLhzd",
-            base_url="https://api.chatanywhere.cn/v1"
-        )
+        # client = OpenAI(
+        #     api_key="sk-x9XIbhuccUypiLMq3mqfCiyBqnV0bExnkwUkz3eRxABfLhzd",
+        #     base_url="https://api.chatanywhere.cn/v1"
+        # )
+        client = OpenAI(api_key="sk-proj-XUrICV4CQdnOUA9xb636T3BlbkFJM1XukZRieCo69xQn7DNQ")
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
