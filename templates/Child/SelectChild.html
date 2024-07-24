@@ -5,7 +5,9 @@
 {% endblock %}
 {% block appbody %}
 <div class="container" style="padding-top: 40px">
-    <h2 style="color: rebeccapurple; font-weight: bolder">Urgent Notifications</h2>
+    <h2 style="color: #850000; font-weight: bolder">
+        <i class="fa-solid fa-triangle-exclamation" style="color: #850000"></i>
+        Urgent Notifications</h2>
     <div class="row urgent-notifications-container">
         {% if urgent_notification %}
             {% for notification in urgent_notification %}
@@ -46,7 +48,7 @@
         {% endif %}
     </div>
 
-    <h2 style="color: rebeccapurple; font-weight: bolder">Select Your Child</h2>
+    <h2 style="color: rebeccapurple; font-weight: bolder">Safeguard Your Child</h2>
     <div class="row">
         {% for child in children %}
         <div class="col-12 mb-4">

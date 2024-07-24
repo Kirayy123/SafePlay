@@ -8,6 +8,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="{% static 'css/navbar.css' %}" rel="stylesheet">
     <title>SafePlay - {% block title_block %}{% endblock %}</title>
     <style>
@@ -25,11 +26,30 @@
             padding: 10px;
             border-radius: 5px;
         }
+        #helpBtn, #robotBtn {
+            display: none;
+            position: fixed;
+            bottom: 10px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: white;
+            color: rebeccapurple;
+            cursor: pointer;
+            font-size: xx-large;
+            left: 10px;
+        }
+        #helpBtn:hover, #robotBtn:hover{
+            color: #555;
+        }
         #backToTopBtn:hover, #backToBottomBtn:hover {
             background-color: #555;
         }
         #backToBottomBtn {
             right: 60px;
+        }
+        #robotBtn{
+            left: 70px;
         }
     </style>
 </head>
@@ -73,10 +93,89 @@
         <i class="fas fa-arrow-down"></i>
     </button>
 
+    <button onclick="$('#helpModal').modal('show');" id="helpBtn" title="Help">
+        <i class="fas fa-question-circle"></i>
+    </button>
+
+    <button onclick="$('#robotModal').modal('show');" id="robotBtn" title="BigBuddy Info">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalLabel">Help Desk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 style="color: rebeccapurple; font-weight: bold">Welcome to SafePlay VR Parental Control App</h4>
+                    <p>This guide provides an overview of the various features available to manage and monitor your child's virtual reality (VR) experience effectively.</p>
+
+                    <h5 style="color: rebeccapurple; font-weight: bold">Child Selection</h5>
+                    <p>You first need to select a specific child whose VR activities you want to supervise.<br>From this part, you can see:
+                    <ul>
+                        <li><strong>Urgent Notification:</strong> This section alerts you about urgent situations in VR activities, such as bullying incidents where your child may be a bully or a victim. Click on any notification to handle the emergency directly.</li>
+                        <li><strong>Select Your Child:</strong> View and manage information for your registered children. You can select a child to enter a detailed management interface or add new children to your account.</li>
+                    </ul></p>
+                    <h5 style="color: rebeccapurple; font-weight: bold">Detailed Management Interface</h5>
+                    <ul>
+                        <li><strong>Notification:</strong> Shows real-time notifications of your child’s activities in VR, including entering or exiting the VR, and notifications related to bullying. If your child is currently in VR, a link to their live activity is also displayed. You can directly manage incidents of bullying from this interface.</li>
+                        <li><strong>History:</strong> Displays a comprehensive history of your child's VR activities. Clicking on a record shows more details like the type of activity, timing, and a video recap link.</li>
+                        <li><strong>Report:</strong> Provides graphical insights into your child's daily and weekly VR activities, including duration and frequency of bullying incidents. It also includes educational content about bullying with links to further resources. A question window allows you to inquire about specific concerns via the ChatGPT interface.</li>
+                        <li><strong>Settings:</strong> Customize VR usage settings tailored to various VR environments such as multiplayer games, educational VR, and fitness VR. Settings allow you to predefine responses to bullying incidents, set daily VR usage limits, and more.</li>
+                        <li><strong>Communication:</strong> Facilitate communication between you and your child through messages that are delivered by Big Buddy, making the interaction feel more personal and engaging for the child.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Robot Info Modal -->
+    <div class="modal fade" id="robotModal" tabindex="-1" aria-labelledby="robotModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="robotModalLabel">BigBuddy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Children are experiencing new forms of harassment in social virtual reality (VR), which parents often cannot supervise. We introduced "Big Buddy", an artificial intelligence (AI) moderator that protects children from harassment in social VR, endorsed by children and parents. After Big Buddy's intervention, children feel less upset and safer after being disrupted. Parents noticed the usefulness of Big Buddy and felt reassured, but continued to supervise.</p>
+                    <div class="row">
+                        <div class="col-2" style="display: flex;justify-content: center; align-items: center;">
+                            <img src="{% static 'image/bigbbudy.png' %}" alt="BigBuddy Logo" class="header-logo"
+                             style="height: 240px; width: auto">
+                        </div>
+                        <div class="col-10">
+                            <p><strong style="font-size: x-large; color: rebeccapurple;">BigBuddy</strong>
+                                is a simulated AI supervision system designed for use in social virtual reality (Social VR) environments, especially for the safety and interaction supervision of child users. Big Buddy intervenes in disruptive behaviors that occur in social VR environments. For example, when someone breaks the rules of the game or harasses other players, Big Buddy takes actions such as resetting points, notifying the player's parents, or even removing the disruptor from the game.</p>
+                        </div>
+                    </div>
+
+                    <h5 style="color: rebeccapurple;"><strong>Main Features</strong></h5>
+                    <ul>
+                        <li><strong>Safety Enhancement:</strong> By intervening in inappropriate behavior in a timely manner, Big Buddy aims to create a safer virtual space for child users.</li>
+                        <li><strong>Emotional Support:</strong> The presence of Big Buddy can reduce children's sadness when faced with provocative behavior and increase their sense of safety.</li>
+                    </ul>
+                    <h5 style="color: rebeccapurple;"><strong>What BigBuddy can do?</strong></h5>
+                    <ul>
+                        <li><strong>Companionship:</strong> Offers constant companionship in VR, making children feel more secure and at ease during their virtual sessions.</li>
+                        <li><strong>Bullying Intervention:</strong> Actively monitors for signs of bullying and intervenes when necessary. BigBuddy can identify and address negative behaviors, providing immediate support to the victim and taking appropriate actions against the aggressor.</li>
+                        <li><strong>Communication:</strong> Engages in conversations with children, offering educational guidance and emotional support. This helps in creating a nurturing and learning environment within VR.</li>
+                        <li><strong>Parental Notifications:</strong> Send real-time alerts and summaries of a child's activities and interactions in VR to parents, helping them stay informed about their child's VR experience without needing to constantly supervise directly.</li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         var myTopButton = document.getElementById("backToTopBtn");
         var myBottomButton = document.getElementById("backToBottomBtn");
+        document.getElementById("helpBtn").style.display = "block";
+        document.getElementById("robotBtn").style.display = "block";
 
         // When scrolls down 20px from top, show the button
         window.onscroll = function() {
@@ -105,34 +204,31 @@
             window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
         }
 
+        const loc = window.location
+        let wsStart = 'ws://'
+        if (loc.protocol === 'https:') {
+            wsStart = 'wss://'
+        }
+        const endpoint = wsStart + loc.host + loc.pathname
+        const socket = new WebSocket(
+            endpoint.replace('http://', 'ws://').replace('https://', 'wss://') + "ws/notifications/"
+        )
 
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            console.log("Received data from websocket:", data);
+            location.reload();  // 这会导致页面刷新
+        }
 
-
-            const loc = window.location
-    let wsStart = 'ws://'
-    if (loc.protocol === 'https:') {
-        wsStart = 'wss://'
-    }
-    const endpoint = wsStart + loc.host + loc.pathname
-    const socket = new WebSocket(
-        endpoint.replace('http://', 'ws://').replace('https://', 'wss://') + "ws/notifications/"
-    )
-
-    socket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        console.log("Received data from websocket:", data);
-        location.reload();  // 这会导致页面刷新
-    }
-
-    socket.onopen = function(e) {
-        console.log("WebSocket open", e);
-    }
-    socket.onerror = function(e) {
-        console.log("WebSocket error", e);
-    }
-    socket.onclose = function(e) {
-        console.log("WebSocket closed", e);
-    }
+        socket.onopen = function(e) {
+            console.log("WebSocket open", e);
+        }
+        socket.onerror = function(e) {
+            console.log("WebSocket error", e);
+        }
+        socket.onclose = function(e) {
+            console.log("WebSocket closed", e);
+        }
     </script>
 </body>
 </html>
