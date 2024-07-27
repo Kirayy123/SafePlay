@@ -119,7 +119,7 @@ class GeneralSettingForm(forms.ModelForm):
     # ]
     file_path = os.path.join(BASE_DIR, 'static', 'bad-words.txt')
     with open(file_path, "r") as file:
-    # with open("D:\\Python学习\\bad-words.txt", "r") as file:
+        # with open("D:\\Python学习\\bad-words.txt", "r") as file:
         bad_words = [line.strip() for line in file if line.strip()]
     BAD_WORD_CHOICES = [(word, word) for word in bad_words]
 
@@ -188,7 +188,7 @@ class GameSettingForm(forms.ModelForm):
         choices=[
             ('exit', 'BigBuddy verbal reminders, set points to 0 AND exclude from the game'),
             ('point', 'BigBuddy verbal reminders AND set points to 0'),
-            ('notice', 'BigBuddy verbal reminders for bad behavior'),
+            ('notice', 'BigBuddy verbal reminders and educate for bad behavior'),
             ('ignore', 'No intervention')],
         widget=forms.Select(attrs={'class': 'form-control fixed-width'}),
         required=False
@@ -257,7 +257,7 @@ class EducationSettingForm(forms.ModelForm):
     edu_bully_action = forms.ChoiceField(
         choices=[
             ('exit', 'BigBuddy verbal reminders AND exclude from current session'),
-            ('notice', 'BigBuddy verbal reminders for bad behavior'),
+            ('notice', 'BigBuddy verbal reminders and educate for bad behavior'),
             ('ignore', 'No intervention')],
         widget=forms.Select(attrs={'class': 'form-control fixed-width'}),
         required=False
@@ -301,7 +301,7 @@ class ChatSettingForm(forms.ModelForm):
     chat_bully_action = forms.ChoiceField(
         choices=[
             ('exit', 'BigBuddy verbal reminders AND stop current chat'),
-            ('notice', 'BigBuddy verbal reminders for bad behavior'),
+            ('notice', 'BigBuddy verbal reminders and educate for bad behavior'),
             ('ignore', 'No intervention')],
         widget=forms.Select(attrs={'class': 'form-control fixed-width'}),
         required=False
@@ -315,11 +315,18 @@ class ChatSettingForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control fixed-width'}),
         required=False
     )
+    who_can_chat = forms.ChoiceField(
+        choices=[
+            ('friend', 'Friends only'),
+            ('everyone', 'Everyone')],
+        widget=forms.RadioSelect,
+        required=False
+    )
 
     class Meta:
         model = ChatSetting
         fields = ['chat_daily_playtime', 'chat_break_time', 'chat_break_duration_time',
-                  'chat_presence_of_ai', 'chat_bully_action', 'chat_victim_action']
+                  'chat_presence_of_ai', 'who_can_chat', 'chat_bully_action', 'chat_victim_action']
 
     def __init__(self, *args, **kwargs):
         super(ChatSettingForm, self).__init__(*args, **kwargs)

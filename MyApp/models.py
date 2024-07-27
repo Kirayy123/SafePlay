@@ -169,7 +169,7 @@ class GameSetting(models.Model):
         choices=[
             ('exit', 'BigBuddy verbal reminders, set points to 0 AND exclude from the game'),
             ('point', 'BigBuddy verbal reminders AND set points to 0'),
-            ('notice', 'BigBuddy verbal reminders for bad behavior'),
+            ('notice', 'BigBuddy verbal reminders and educate for bad behavior'),
             ('ignore', 'No intervention')], default='exit')
     game_victim_action = models.TextField(
         choices=[
@@ -192,7 +192,7 @@ class EducationSetting(models.Model):
     edu_bully_action = models.TextField(
         choices=[
             ('exit', 'BigBuddy verbal reminders AND exclude from current session'),
-            ('notice', 'BigBuddy verbal reminders for bad behavior'),
+            ('notice', 'BigBuddy verbal reminders and educate for bad behavior'),
             ('ignore', 'No intervention')], default='exit')
     edu_victim_action = models.TextField(
         choices=[
@@ -215,7 +215,7 @@ class ChatSetting(models.Model):
     chat_bully_action = models.TextField(
         choices=[
             ('exit', 'BigBuddy verbal reminders AND stop current chat'),
-            ('notice', 'BigBuddy verbal reminders for bad behavior'),
+            ('notice', 'BigBuddy verbal reminders and educate for bad behavior'),
             ('ignore', 'No intervention')], default='exit')
     chat_victim_action = models.TextField(
         choices=[
@@ -223,6 +223,11 @@ class ChatSetting(models.Model):
             ('comfort', 'BigBuddy verbal notice AND comfort your child'),
             ('notice', 'BigBuddy verbal notice about bad behavior'),
             ('ignore', 'No intervention'), ], default='comfort')
+    who_can_chat = models.TextField(
+        choices=[
+            ('friend', 'Friends only'),
+            ('everyone', 'Everyone')], default='everyone')
+
 
 class SingleGameSetting(models.Model):
     child = models.OneToOneField(Child, on_delete=models.CASCADE, related_name='sgame_setting')
@@ -233,6 +238,7 @@ class SingleGameSetting(models.Model):
         ('Always', 'Always'),
         ('sometimes', 'Only appear when child needs')], default='Always')
 
+
 class FitnessSetting(models.Model):
     child = models.OneToOneField(Child, on_delete=models.CASCADE, related_name='fitness_setting')
     fitness_daily_playtime = models.IntegerField(default=240)
@@ -242,6 +248,7 @@ class FitnessSetting(models.Model):
         ('Always', 'Always'),
         ('Hurt', 'Appear when child get hurt'),
         ('Need', 'Only Appear when child needs')], default='Always')
+
 
 class ArtSetting(models.Model):
     child = models.OneToOneField(Child, on_delete=models.CASCADE, related_name='art_setting')
