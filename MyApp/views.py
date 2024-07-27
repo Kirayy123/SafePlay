@@ -403,6 +403,11 @@ def Report(request, child_id):
         child=child, type=1, time__range=(week_min, today_max)
     ).count()
 
+    bully_notifications_daily = Notification.objects.filter(child=child, type=2, time__range=(today_min, today_max))
+    victim_notifications_daily = Notification.objects.filter(child=child, type=1, time__range=(today_min, today_max))
+    bully_notifications_weekly = Notification.objects.filter(child=child, type=2, time__range=(week_min, today_max))
+    victim_notifications_weekly = Notification.objects.filter(child=child, type=1, time__range=(week_min, today_max))
+
     victimtext = Textfile.objects.filter(title='victimtext').first()
     bullytext = Textfile.objects.filter(title='bullytext').first()
 
@@ -419,6 +424,10 @@ def Report(request, child_id):
         'daily_victim_count': daily_victim_count,
         'weekly_bully_count': weekly_bully_count,
         'weekly_victim_count': weekly_victim_count,
+        'bully_notifications_daily': bully_notifications_daily,
+        'victim_notifications_daily': victim_notifications_daily,
+        'bully_notifications_weekly': bully_notifications_weekly,
+        'victim_notifications_weekly': victim_notifications_weekly,
         'bullytext': bullytext,
         'victimtext': victimtext,
         'texts': texts,
@@ -441,7 +450,6 @@ def Report(request, child_id):
         return JsonResponse({'respond': respond})
 
     return render(request, 'App/Report.html', context)
-
 
 def prepare_daily_data(hourly_sessions):
     games = set(session['game_name'] for session in hourly_sessions)
