@@ -386,6 +386,7 @@ def Report(request, child_id):
 
     daily_chart_data = prepare_daily_data(hourly_sessions)
     weekly_chart_data = prepare_weekly_data(child)
+    weekly_game_times_stacked = get_weekly_game_time_stacked_data(child)
 
     # Calculate daily and weekly Bully and Bullying victim counts
     daily_bully_count = Notification.objects.filter(
@@ -420,6 +421,7 @@ def Report(request, child_id):
         'child_id': child_id,
         'daily_chart_data': json.dumps(daily_chart_data, cls=DjangoJSONEncoder),
         'weekly_chart_data': json.dumps(weekly_chart_data, cls=DjangoJSONEncoder),
+        'weekly_game_times_stacked': json.dumps(weekly_game_times_stacked, cls=DjangoJSONEncoder),
         'daily_bully_count': daily_bully_count,
         'daily_victim_count': daily_victim_count,
         'weekly_bully_count': weekly_bully_count,
@@ -502,7 +504,7 @@ def prepare_weekly_data(child):
     weekly_data = {}
     labels = []
     today = datetime.now().date()  # Corrected to just datetime
-    days = [(today - timedelta(days=i)).strftime('%A') for i in range(6, -1, -1)]  # Corrected to just timedelta
+    days = [(today - timedelta(days=i)).strftime('%a') for i in range(6, -1, -1)]  # Corrected to just timedelta
 
     for i, day_name in enumerate(days):
         day = today - timedelta(days=6 - i)  # Corrected to just timedelta
@@ -536,6 +538,29 @@ def prepare_weekly_data(child):
     }]
 
     return {'labels': labels, 'datasets': datasets}
+
+def get_weekly_game_time_stacked_data(child):
+    start_of_week = datetime.now().date() - timedelta(days=datetime.now().date().weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+
+    game_times = GameSession.objects.filter(
+        child=child,
+        start_time__date__range=[start_of_week, end_of_week]
+    ).values('game_name').annotate(
+        total_time=Sum(ExpressionWrapper(F('end_time') - F('start_time'), output_field=DurationField()))
+    ).order_by('-total_time')  # 按游戏时间降序
+
+    datasets = []
+    for game in game_times:
+        total_minutes = game['total_time'].total_seconds() / 60 if game['total_time'] else 0
+        datasets.append({
+            'label': game['game_name'],
+            'data': [total_minutes],  # 使用列表来包含每个游戏的时间
+            'backgroundColor': generate_random_color(),
+        })
+
+    return {'labels': ["Game Time (each)"], 'datasets': datasets}
+
 
 
 def AIinfo(request, child_id, fromtag):
