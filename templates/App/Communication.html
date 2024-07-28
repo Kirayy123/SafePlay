@@ -11,7 +11,7 @@
 <div class="container mt-4">
     <h2 style="color: rebeccapurple; padding-bottom: 40px; font-weight: bolder">
         Chat with Your Child</h2>
-    <div class="message-container" style="height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+    <div class="message-container" style="height: auto; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
         {% for message in messages %}
         <div class="{% if message.tag == 0 %}message-bubble right{% else %}message-bubble left{% endif %}">
             <div class="message-text">
@@ -28,6 +28,34 @@
         <button type="submit" class="btn" style="background-color: rebeccapurple; color: white;">
             Send</button>
     </form>
+    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#chatHistoryModal" style="background-color: rebeccapurple; color: white;" title="History">
+        <i class="fa fa-history"></i>
+    </button>
+</div>
+
+    <!-- Chat History Modal -->
+<div class="modal fade" id="chatHistoryModal" tabindex="-1" aria-labelledby="chatHistoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="chatHistoryModalLabel">Chat History</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="max-height: 800px; overflow-y: auto;">
+        <!-- Filter Form -->
+        <form id="filterForm">
+          <div class="input-group mb-3">
+            <input type="date" class="form-control" id="filterDate">
+            <button class="btn btn-outline-secondary" type="button" id="filterButton">Filter</button>
+            <button class="btn btn-outline-danger" type="button" id="resetButton">Reset</button>
+          </div>
+        </form>
+        <div id="historyContainer">
+          <!-- Messages will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -46,13 +74,52 @@
                         content += '<div class="' + messageClass + '"><div class="message-text"><i class="' + iconClass + '" aria-hidden="true"></i> ' + message.text + '</div><div class="message-time">' + message.time + '</div></div>';
                     });
                     messageContainer.innerHTML = content;
-                    {#messageContainer.scrollTop = messageContainer.scrollHeight;#}
+                    messageContainer.scrollTop = messageContainer.scrollHeight;
                 })
                 .catch(error => console.error('Error:', error));
         }
 
         setInterval(refreshMessages, 1000); // Refresh messages every second
     }
+
+
+
+    function loadChatHistory(date = '') {
+        const url = `{% url 'fetch_history' child_id %}` + (date ? `?date=${date}` : '');
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const historyContainer = document.getElementById('historyContainer');
+                let content = '';
+                if (data.messages.length === 0) {
+                    // Display no history message if there are no messages
+                    content = '<div class="no-history">No history today</div>';
+                } else {
+                    data.messages.forEach(function(message) {
+                        let messageClass = message.tag == 0 ? 'message-bubble right' : 'message-bubble left';
+                        let iconClass = message.tag == 0 ? 'fa fa-user' : 'fa fa-child';
+                        content += `<div class="${messageClass}"><div class="message-text"><i class="${iconClass}" aria-hidden="true"></i> ${message.text}</div><div class="message-time">${message.time}</div></div>`;
+                    });
+                }
+                historyContainer.innerHTML = content;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    document.getElementById('filterButton').addEventListener('click', function() {
+      const selectedDate = document.getElementById('filterDate').value;
+      loadChatHistory(selectedDate);
+    });
+
+    document.getElementById('resetButton').addEventListener('click', function() {
+      loadChatHistory();
+      document.getElementById('filterDate').value = ''; // Reset the date picker
+    });
+
+    document.getElementById('chatHistoryModal').addEventListener('shown.bs.modal', function () {
+      loadChatHistory(); // Load all history when the modal opens
+    });
+
 </script>
 
 

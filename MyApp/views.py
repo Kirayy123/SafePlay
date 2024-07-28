@@ -97,6 +97,7 @@ def child_selection(request):
     else:
         return redirect('addchild')
 
+
 def fetch_urgent_notifications(request):
     parent = request.user
     children = parent.children.all()
@@ -119,6 +120,7 @@ def fetch_urgent_notifications(request):
     } for n in urgent_notification]
 
     return JsonResponse(data, safe=False)
+
 
 @login_required
 def add_child(request):
@@ -184,6 +186,7 @@ def Notifications(request, child_id=None):
         'gameurl': gameurl
     }
     return render(request, 'App/Notification.html', context)
+
 
 @login_required
 def fetch_notifications(request, child_id):
@@ -353,18 +356,35 @@ def Communication(request, child_id=None):
         if message_text:
             Message.objects.create(child=child, text=message_text, tag=0)
             return redirect('communication', child_id=child_id)
-    messages = Message.objects.filter(child=child).order_by('time')
+    messages = Message.objects.filter(child=child).order_by('-time')[:6]
+    messages = sorted(messages, key=lambda m: m.time)
     context = {
         'child_id': child_id,
         'messages': messages,
     }
     return render(request, 'App/Communication.html', context)
 
+
 def fetch_messages(request, child_id):
     child = get_object_or_404(Child, pk=child_id)
-    messages = Message.objects.filter(child=child).order_by('time')
-    messages_data = [{'text': message.text, 'time': message.time.strftime("%Y-%m-%d %H:%M"), 'tag': message.tag} for message in messages]
+    messages = Message.objects.filter(child=child).order_by('-time')[:6]
+    messages = sorted(messages, key=lambda m: m.time)
+    messages_data = [{'text': message.text, 'time': message.time.strftime("%Y-%m-%d %H:%M"), 'tag': message.tag} for
+                     message in messages]
     return JsonResponse({'messages': messages_data})
+
+
+def fetch_history(request, child_id):
+    child = get_object_or_404(Child, pk=child_id)
+    date = request.GET.get('date')
+    if date:
+        messages = Message.objects.filter(child=child, time__date=date).order_by('time')
+    else:
+        messages = Message.objects.filter(child=child).order_by('-time')
+    messages_data = [{'text': message.text, 'time': message.time.strftime("%Y-%m-%d %H:%M"), 'tag': message.tag} for
+                     message in messages]
+    return JsonResponse({'messages': messages_data})
+
 
 @login_required
 def Report(request, child_id):
@@ -453,6 +473,7 @@ def Report(request, child_id):
 
     return render(request, 'App/Report.html', context)
 
+
 def prepare_daily_data(hourly_sessions):
     games = set(session['game_name'] for session in hourly_sessions)
 
@@ -539,6 +560,7 @@ def prepare_weekly_data(child):
 
     return {'labels': labels, 'datasets': datasets}
 
+
 def get_weekly_game_time_stacked_data(child):
     start_of_week = datetime.now().date() - timedelta(days=datetime.now().date().weekday())
     end_of_week = start_of_week + timedelta(days=6)
@@ -560,7 +582,6 @@ def get_weekly_game_time_stacked_data(child):
         })
 
     return {'labels': ["Game Time (each)"], 'datasets': datasets}
-
 
 
 def AIinfo(request, child_id, fromtag):
