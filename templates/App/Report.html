@@ -83,55 +83,46 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-6 d-flex align-items-center">
-            <h4><strong>Learn More about Bullying</strong></h4>
-        </div>
-        <div class="col-6">
-            {% for text in texts %}
-                <div class="harm-section mt-4">
-                    <h5 style="color: rebeccapurple;">
-                        <a href="#" class="text-title" data-bs-toggle="modal"
-                           data-bs-target="#textModal{{ forloop.counter }}"
-                           style="color: rebeccapurple; text-decoration: none;
-                           transition: color 0.3s;"
-                           onmouseover="this.style.textDecoration='underline';"
-                           onmouseout="this.style.textDecoration='none'; this.style.color='rebeccapurple';">
-                            {{ text.title }}
-                        </a>
-                    </h5>
-                </div>
+    <h4 style="padding-top: 30px"><strong>Learn More about Bullying</strong></h4>
+    <div style="padding-top: 30px">
+        {% for text in texts %}
+            <a href="#" class="text-title" data-bs-toggle="modal"
+               data-bs-target="#textModal{{ forloop.counter }}"
+               style="color: rebeccapurple; text-decoration: none;
+               transition: color 0.3s;"
+               onmouseover="this.style.textDecoration='underline';"
+               onmouseout="this.style.textDecoration='none'; this.style.color='rebeccapurple';">
+                | {{ text.title }}</a>
 
-                <!-- modal for each text -->
-                <div class="modal fade" id="textModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="textModalLabel{{ forloop.counter }}" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="textModalLabel{{ forloop.counter }}">{{ text.title }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                {{ text.body|linebreaks }}
-                                {% if text.urls.all %}
-                                    <div class="row">
-                                        <div class="col-3">
-                                            Refered Papers:
-                                        </div>
-                                        <div class="col-9 align-left">
-                                            <ul>
-                                                {% for url in text.urls.all %}
-                                                    <li><a href="{{ url.url }}" target="_blank">{{ url.paper }}</a></li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
+            <!-- modal for each text -->
+            <div class="modal fade" id="textModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="textModalLabel{{ forloop.counter }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="textModalLabel{{ forloop.counter }}">{{ text.title }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {{ text.body|linebreaks }}
+                            {% if text.urls.all %}
+                                <div class="row">
+                                    <div class="col-3">
+                                        Refered Papers:
                                     </div>
-                                {% endif %}
-                            </div>
+                                    <div class="col-9 align-left">
+                                        <ul>
+                                            {% for url in text.urls.all %}
+                                                <li><a href="{{ url.url }}" target="_blank">{{ url.paper }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
 
     <div class="container mt-4">
@@ -150,7 +141,7 @@
             </div>
         </form>
         <div class="mt-3">
-            <p>Response from ChatGPT:</p>
+            <p>Response for your question:</p>
             <div class="response-container"
                  style="height: 400px; overflow-y: auto; border: 1px solid #ccc;">
                 <div id="chatResponse"></div>
