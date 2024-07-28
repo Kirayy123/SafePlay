@@ -74,61 +74,6 @@
     </div>
 </div>
 
-{#<script>#}
-{#    document.getElementById('notification-filter').addEventListener('change', function() {#}
-{#        var newUrl = new URL(window.location.href);#}
-{#        newUrl.searchParams.set('type', this.value); // update query#}
-{#        window.location.href = newUrl.href; // to new URL#}
-{#    });#}
-{#</script>#}
-
-{#    <script>#}
-{#document.addEventListener('DOMContentLoaded', function() {#}
-{#    const notificationContainer = document.querySelector('div[style="height: 600px; overflow-y: auto; border: 1px solid #ccc; padding: 15px;"]');#}
-{##}
-{#    function refreshNotifications() {#}
-{#        fetch('{% url "fetch_notifications" child_id %}')#}
-{#            .then(response => response.json())#}
-{#            .then(data => {#}
-{#                let content = '';#}
-{#                data.notifications.forEach(function(notification) {#}
-{#                    content += `<div class="card mb-3">#}
-{#                            <div class="card-body">#}
-{#                                <div class="row">#}
-{#                                    <div class="col-6">#}
-{#                                        <h5 class="card-title"><strong>${notification.name}</strong></h5>#}
-{#                                    </div>#}
-{#                                    <div class="col-6 text-end">#}
-{#                                        <h6 class="card-subtitle mb-2 text-muted">${notification.time}</h6>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                                <div class="row">#}
-{#                                    <div class="col-8">#}
-{#                                        <p class="card-text">#}
-{#                                            ${notification.type == 1 ? '<span style="font-weight: bold; color: #850000;">Victim!</span>' : ''}#}
-{#                                            ${notification.type == 2 ? '<span style="font-weight: bold; color: #850000;">Bully!</span>' : 'Normal Status.'}#}
-{#                                            ${notification.text}#}
-{#                                        </p>#}
-{#                                    </div>#}
-{#                                    <div class="col-4 text-end">#}
-{#                                        ${(notification.type == 1 || notification.type == 2) && !notification.processed ?#}
-{#                                            `<a href="/urgentprocess/${notification.id}/1" class="btn" style="background-color: rebeccapurple; color: white;">Click to Process</a>` :#}
-{#                                            (notification.processed ? '<p style="color: gray">Processed</p>' : '')}#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </div>`;#}
-{#                    });#}
-{#                notificationContainer.innerHTML = content;#}
-{#            })#}
-{#            .catch(error => console.error('Error:', error));#}
-{#    }#}
-{##}
-{#    setInterval(refreshNotifications, 5000); // Refresh notifications every second#}
-{#});#}
-{#</script>#}
-
-
     <script>
 document.addEventListener('DOMContentLoaded', function() {
     const notificationContainer = document.querySelector('div[style="height: 600px; overflow-y: auto; border: 1px solid #ccc; padding: 15px;"]');

@@ -81,6 +81,11 @@ def child_selection(request):
     parent = request.user
     children = parent.children.all()
 
+    time_limit = now() - timedelta(hours=4)
+    Notification.objects.filter(
+        Q(child__parent=parent), Q(type__in=[1, 2]), processed=False, time__lte=time_limit
+    ).update(processed=True)
+
     urgent_notification = Notification.objects.none()
 
     for child in children:
