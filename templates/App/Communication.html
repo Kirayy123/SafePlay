@@ -7,13 +7,16 @@
 
 {% block content %}
     <link href="{% static 'css/communication.css' %}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
 <div class="container mt-4">
     <h2 style="color: rebeccapurple; padding-bottom: 40px; font-weight: bolder">
         Chat with Your Child</h2>
     <div class="message-container" style="height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
         {% for message in messages %}
-        <div class="{% if message.tag == 0 %}message-bubble left{% else %}message-bubble right{% endif %}">
-            <div class="message-text">{{ message.text }}</div>
+        <div class="{% if message.tag == 0 %}message-bubble right{% else %}message-bubble left{% endif %}">
+            <div class="message-text">
+                <i class="{% if message.tag == 0 %}fa fa-user{% else %}fa fa-child{% endif %}" aria-hidden="true"></i>
+                {{ message.text }}</div>
             <div class="message-time">{{ message.time|date:"Y-m-d H:i" }}</div>
         </div>
         {% endfor %}
@@ -38,8 +41,9 @@
                 .then(data => {
                     let content = '';
                     data.messages.forEach(function(message) {
-                        let messageClass = message.tag == 0 ? 'message-bubble left' : 'message-bubble right';
-                        content += '<div class="' + messageClass + '"><div class="message-text">' + message.text + '</div><div class="message-time">' + message.time + '</div></div>';
+                        let messageClass = message.tag == 0 ? 'message-bubble right' : 'message-bubble left';
+                        let iconClass = message.tag == 0 ? 'fa fa-user' : 'fa fa-child';
+                        content += '<div class="' + messageClass + '"><div class="message-text"><i class="' + iconClass + '" aria-hidden="true"></i> ' + message.text + '</div><div class="message-time">' + message.time + '</div></div>';
                     });
                     messageContainer.innerHTML = content;
                     {#messageContainer.scrollTop = messageContainer.scrollHeight;#}
