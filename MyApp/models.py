@@ -21,7 +21,7 @@ class Child(models.Model):
 class Notification(models.Model):
     child = models.ForeignKey(Child, on_delete=models.CASCADE, related_name='notifications')
     text = models.TextField(default=None)
-    time = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField(default=False)
     TYPE_CHOICES = (
         (0, 'Enter game'),
         (3, 'Exit game'),

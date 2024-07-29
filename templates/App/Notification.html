@@ -48,8 +48,10 @@
                                     <span style="font-weight: bold; color: #850000;">Victim!</span>
                                 {% elif notification.type == 2 %}
                                     <span style="font-weight: bold; color: #850000;">Bully!</span>
-                                {% else %}
-                                    Normal Status.
+                                {% elif notification.type == 0 %}
+                                    Enter.
+                                {% elif notification.type == 3 %}
+                                    Exit.
                                 {% endif %}
                                 {% if notification.type == 0 %}
                                     {{ notification.text }}
@@ -118,7 +120,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="col-8">
                                         <p class="card-text">
                                             ${notification.type == 1 ? '<span style="font-weight: bold; color: #850000;">Victim!</span>' : ''}
-                                            ${notification.type == 2 ? '<span style="font-weight: bold; color: #850000;">Bully!</span>' : 'Normal Status.'}
+                                            ${notification.type == 2 ? '<span style="font-weight: bold; color: #850000;">Bully!</span>' : ''}
+                                            ${notification.type == 0 ? 'Enter.' : ''}
+                                            ${notification.type == 3 ? 'Exit.' : ''}
                                             ${notification.text}
                                         </p>
                                     </div>
