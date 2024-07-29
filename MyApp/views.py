@@ -567,22 +567,23 @@ def prepare_weekly_data(child):
 
 
 def get_weekly_game_time_stacked_data(child):
-    start_of_week = datetime.now().date() - timedelta(days=datetime.now().date().weekday())
-    end_of_week = start_of_week + timedelta(days=6)
+    today_min = now().replace(hour=0, minute=0, second=0, microsecond=0)
+    today_max = today_min + timedelta(days=1)
+    week_min = today_min - timedelta(days=6)
 
     game_times = GameSession.objects.filter(
         child=child,
-        start_time__date__range=[start_of_week, end_of_week]
+        start_time__date__range=[week_min, today_max]
     ).values('game_name').annotate(
         total_time=Sum(ExpressionWrapper(F('end_time') - F('start_time'), output_field=DurationField()))
-    ).order_by('-total_time')  # 按游戏时间降序
+    ).order_by('-total_time')
 
     datasets = []
     for game in game_times:
         total_minutes = game['total_time'].total_seconds() / 60 if game['total_time'] else 0
         datasets.append({
             'label': game['game_name'],
-            'data': [total_minutes],  # 使用列表来包含每个游戏的时间
+            'data': [total_minutes],
             'backgroundColor': generate_random_color(),
         })
 
