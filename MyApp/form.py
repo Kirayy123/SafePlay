@@ -110,13 +110,6 @@ class GeneralSettingForm(forms.ModelForm):
     TIME_CHOICES = [(30, '30 minutes'), (60, '1 hours'), (90, '1.5 hours'),
                     (120, '2 hours'), (180, '3 hours'), (240, '4 hours')]
     daily_playtime = forms.ChoiceField(choices=TIME_CHOICES, required=False)
-    # BAD_WORD_CHOICES = [
-    #     ('stupid', 'stupid'), ('idiot', 'idiot'), ('dumb', 'dumb'), ('jerk', 'jerk'),
-    #     ('loser', 'loser'), ('moron', 'moron'), ('shut up', 'shut up'), ('suck', 'suck'),
-    #     ('hell', 'hell'), ('damn', 'damn'), ('crap', 'crap'), ('bastard', 'bastard'),
-    #     ('bitch', 'bitch'), ('asshole', 'asshole'), ('freak', 'freak'), ('douche', 'douche'),
-    #     ('fuck', 'fuck'), ('shit', 'shit'), ('piss', 'piss'), ('slut', 'slut'),
-    # ]
     file_path = os.path.join(BASE_DIR, 'static', 'bad-words.txt')
     with open(file_path, "r") as file:
         # with open("D:\\Python学习\\bad-words.txt", "r") as file:

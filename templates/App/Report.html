@@ -76,81 +76,7 @@
             </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-12">
-            <hr class="my-separator" style="border-top: 2px solid #ccc; margin: 0;">
-        </div>
-    </div>
-
-    <h4 style="padding-top: 30px"><strong>Learn More about Bullying</strong></h4>
-    <div style="padding-top: 30px">
-        {% for text in texts %}
-            <a href="#" class="text-title" data-bs-toggle="modal"
-               data-bs-target="#textModal{{ forloop.counter }}"
-               style="color: rebeccapurple; text-decoration: none;
-               transition: color 0.3s;"
-               onmouseover="this.style.textDecoration='underline';"
-               onmouseout="this.style.textDecoration='none'; this.style.color='rebeccapurple';">
-                | {{ text.title }}</a>
-
-            <!-- modal for each text -->
-            <div class="modal fade" id="textModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="textModalLabel{{ forloop.counter }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="textModalLabel{{ forloop.counter }}">{{ text.title }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            {{ text.body|linebreaks }}
-                            {% if text.urls.all %}
-                                <div class="row">
-                                    <div class="col-3">
-                                        Refered Papers:
-                                    </div>
-                                    <div class="col-9 align-left">
-                                        <ul>
-                                            {% for url in text.urls.all %}
-                                                <li><a href="{{ url.url }}" target="_blank">{{ url.paper }}</a></li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-
-    <div class="container mt-4">
-        <form id="chat-form">
-            {% csrf_token %}
-            <label for="userQuery" class="form-label">What else you want to know? Type Your Question there:</label>
-            <div class="row">
-                <div class="mb-3 col-11">
-                    <input type="text" class="form-control" id="userQuery" name="userQuery" required>
-                </div>
-                <div class="col-1">
-                    <button type="button" class="btn" onclick="sendQuestion();"
-                            style="background-color: rebeccapurple; color: white;">
-                        Send</button>
-                </div>
-            </div>
-        </form>
-        <div class="mt-3">
-            <p>Response for your question:</p>
-            <div class="response-container"
-                 style="height: 400px; overflow-y: auto; border: 1px solid #ccc;">
-                <div id="chatResponse"></div>
-            </div>
-        </div>
-    </div>
-
 </div>
-
     <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
@@ -213,76 +139,47 @@
         });
     });
 
-        var dailyChartData = {{ daily_chart_data|safe }};
-        var weeklyChartData = {{ weekly_chart_data|safe }};
+    var dailyChartData = {{ daily_chart_data|safe }};
+    var weeklyChartData = {{ weekly_chart_data|safe }};
 
-        function sendQuestion() {
-           var userQuery = document.getElementById('userQuery').value;
-           var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-           var endpoint = "{% url 'report' child_id %}";
-           var data = {
-               'userQuery': userQuery,
-               'csrfmiddlewaretoken': csrfToken
-           };
-
-           document.getElementById('chatResponse').innerHTML = '<div style="color: gray; text-align: center;">Please wait for the answer...</div>';
-
-           fetch(endpoint, {
-               method: 'POST',
-               headers: {
-                   'Content-Type': 'application/x-www-form-urlencoded;',
-               },
-               body: new URLSearchParams(data)
-           }).then(response => response.json())
-             .then(data => {
-                 // Update answer from ChatGPT
-                 document.getElementById('chatResponse').innerHTML = data.respond.replace(/\n/g, '<br>');
-             }).catch(error => {
-                 document.getElementById('chatResponse').innerHTML = '<div style="color: red; text-align: center;">加载失败，请重试。</div>';
-             });
+    function showDetailsModal(type) {
+        const title = document.getElementById('detailsModalLabel');
+        const body = document.getElementById('modalBodyContent');
+        body.innerHTML = ''; // Clear previous content
+        // Decide which content to load based on the type
+        if (type === 'bully_daily') {
+            title.textContent = 'Detailed Bully';
+            {% for notification in bully_notifications_daily %}
+                body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong> {{ notification.text }}</p>';
+            {% empty %}
+                body.innerHTML = '<p>No bully instances recorded.</p>';
+            {% endfor %}
+        } else if (type === 'victim_daily') {
+            title.textContent = 'Detailed Victim';
+            {% for notification in victim_notifications_daily %}
+                body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong>{{ notification.text }}</p>';
+            {% empty %}
+                body.innerHTML = '<p>No victim instances recorded.</p>';
+            {% endfor %}
         }
-
-        function showDetailsModal(type) {
-            const title = document.getElementById('detailsModalLabel');
-            const body = document.getElementById('modalBodyContent');
-            body.innerHTML = ''; // Clear previous content
-
-            // Decide which content to load based on the type
-            if (type === 'bully_daily') {
-                title.textContent = 'Detailed Bully';
-                {% for notification in bully_notifications_daily %}
-                    body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong> {{ notification.text }}</p>';
-                {% empty %}
-                    body.innerHTML = '<p>No bully instances recorded.</p>';
-                {% endfor %}
-            } else if (type === 'victim_daily') {
-                title.textContent = 'Detailed Victim';
-                {% for notification in victim_notifications_daily %}
-                    body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong>{{ notification.text }}</p>';
-                {% empty %}
-                    body.innerHTML = '<p>No victim instances recorded.</p>';
-                {% endfor %}
-            }
-            else if (type === 'bully_weekly') {
-                title.textContent = 'Detailed Bully';
-                {% for notification in bully_notifications_weekly %}
-                    body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong>{{ notification.text }}</p>';
-                {% empty %}
-                    body.innerHTML = '<p>No victim instances recorded.</p>';
-                {% endfor %}
-            }
-            else if (type === 'victim_weekly') {
-                title.textContent = 'Detailed Victim';
-                {% for notification in victim_notifications_weekly %}
-                    body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong>{{ notification.text }}</p>';
-                {% empty %}
-                    body.innerHTML = '<p>No victim instances recorded.</p>';
-                {% endfor %}
-            }
-
-            $('#detailsModal').modal('show');
+        else if (type === 'bully_weekly') {
+            title.textContent = 'Detailed Bully';
+            {% for notification in bully_notifications_weekly %}
+                body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong>{{ notification.text }}</p>';
+            {% empty %}
+                body.innerHTML = '<p>No victim instances recorded.</p>';
+            {% endfor %}
         }
-
+        else if (type === 'victim_weekly') {
+            title.textContent = 'Detailed Victim';
+            {% for notification in victim_notifications_weekly %}
+                body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong>{{ notification.text }}</p>';
+            {% empty %}
+                body.innerHTML = '<p>No victim instances recorded.</p>';
+            {% endfor %}
+        }
+        $('#detailsModal').modal('show');
+    }
 
     </script>
 

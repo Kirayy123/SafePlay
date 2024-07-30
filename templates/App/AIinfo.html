@@ -24,7 +24,7 @@
 
 
     <div style="padding-bottom: 30px">
-    <p>Children are experiencing new forms of harassment in social virtual reality (VR), which parents often cannot supervise. We introduced "Big Buddy", an artificial intelligence (AI) moderator that protects children from harassment in social VR, endorsed by children and parents. After Big Buddy's intervention, children feel less upset and safer after being disrupted. Parents noticed the usefulness of Big Buddy and felt reassured, but continued to supervise.</p>
+    <p>Children face harassment in social VR, often unsupervised. "Big Buddy," an AI moderator, helps protect them. Post-intervention, children feel safer, and parents find it useful but still supervise.</p>
     </div>
 
     <div class="row">
@@ -36,22 +36,6 @@
             <p><strong style="font-size: x-large; color: rebeccapurple;">BigBuddy</strong>
                 is a simulated AI supervision system designed for use in social virtual reality (Social VR) environments, especially for the safety and interaction supervision of child users. Big Buddy intervenes in disruptive behaviors that occur in social VR environments. For example, when someone breaks the rules of the game or harasses other players, Big Buddy takes actions such as resetting points, notifying the player's parents, or even removing the disruptor from the game.</p>
         </div>
-    </div>
-
-    <div>
-        <h5 style="color: rebeccapurple; padding-top: 30px"><strong>Main Features</strong></h5>
-        <p><strong>Safety Enhancement: </strong>By intervening in inappropriate behavior in a timely manner, Big Buddy aims to create a safer virtual space for child users.<br>
-            <strong>Emotional Support: </strong>Studies have found that the presence of Big Buddy can reduce children's sadness when faced with provocative behavior and increase their sense of safety.</p>
-    </div>
-
-    <div>
-        <h5 style="color: rebeccapurple;"><strong>Child Perception</strong></h5>
-        <p>Children generally feel that they feel safer in the VR environment in the presence of Big Buddy. They have a positive attitude towards Big Buddy's interventions, especially when they see specific interventions (such as punishment measures).</p>
-    </div>
-
-    <div>
-        <h5 style="color: rebeccapurple;"><strong>Parents' Views</strong></h5>
-        <p>Parents believe that Big Buddy, as a supervision system, can provide a certain degree of peace of mind when they cannot directly supervise their children's virtual activities. Parents also expressed their hope to participate in the use and management of the supervision system and maintain a certain degree of supervision and control.</p>
     </div>
 
     <div>
@@ -83,8 +67,102 @@
         <a href="{% url 'paper' 1 %}" target="_blank" style="font-size: small">
             Big Buddy: Exploring Child Reactions and Parental Perceptions towards a Simulated Embodied Moderating System for Social Virtual Reality</a></p>
     </div>
+
+    <h4 style="padding-top: 30px"><strong>Learn More about Bullying</strong></h4>
+    <div style="padding-top: 30px">
+        {% for text in texts %}
+            <a href="#" class="text-title" data-bs-toggle="modal"
+               data-bs-target="#textModal{{ forloop.counter }}"
+               style="color: rebeccapurple; text-decoration: none;
+               transition: color 0.3s;"
+               onmouseover="this.style.textDecoration='underline';"
+               onmouseout="this.style.textDecoration='none'; this.style.color='rebeccapurple';">
+                | {{ text.title }}</a>
+
+            <!-- modal for each text -->
+            <div class="modal fade" id="textModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="textModalLabel{{ forloop.counter }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="textModalLabel{{ forloop.counter }}">{{ text.title }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {{ text.body|linebreaks }}
+                            {% if text.urls.all %}
+                                <div class="row">
+                                    <div class="col-3">
+                                        Refered Papers:
+                                    </div>
+                                    <div class="col-9 align-left">
+                                        <ul>
+                                            {% for url in text.urls.all %}
+                                                <li><a href="{{ url.url }}" target="_blank">{{ url.paper }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="container mt-4">
+        <form id="chat-form">
+            {% csrf_token %}
+            <label for="userQuery" class="form-label">What else you want to know? Type Your Question there:</label>
+            <div class="row">
+                <div class="mb-3 col-11">
+                    <input type="text" class="form-control" id="userQuery" name="userQuery" required>
+                </div>
+                <div class="col-1">
+                    <button type="button" class="btn" onclick="sendQuestion();"
+                            style="background-color: rebeccapurple; color: white;">
+                        Send</button>
+                </div>
+            </div>
+        </form>
+        <div class="mt-3">
+            <p>Response for your question:</p>
+            <div class="response-container"
+                 style="height: 400px; overflow-y: auto; border: 1px solid #ccc;">
+                <div id="chatResponse"></div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
+    <script>
+        function sendQuestion() {
+           var userQuery = document.getElementById('userQuery').value;
+           var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+           var endpoint = "{% url 'report' child_id %}";
+           var data = {
+               'userQuery': userQuery,
+               'csrfmiddlewaretoken': csrfToken
+           };
+
+           document.getElementById('chatResponse').innerHTML = '<div style="color: gray; text-align: center;">Please wait for the answer...</div>';
+
+           fetch(endpoint, {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/x-www-form-urlencoded;',
+               },
+               body: new URLSearchParams(data)
+           }).then(response => response.json())
+             .then(data => {
+                 // Update answer from ChatGPT
+                 document.getElementById('chatResponse').innerHTML = data.respond.replace(/\n/g, '<br>');
+             }).catch(error => {
+                 document.getElementById('chatResponse').innerHTML = '<div style="color: red; text-align: center;">加载失败，请重试。</div>';
+             });
+        }
+    </script>
 
 {% endblock %}
 

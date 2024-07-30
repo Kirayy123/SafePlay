@@ -22,6 +22,7 @@ from MyApp.form import LoginForm, RegisterForm, ChildForm, GeneralSettingForm, G
 from MyApp.models import Child, GameSession, Message, Notification, Textfile, GeneralSetting, GameSetting, \
     EducationSetting, ChatSetting, SingleGameSetting, ArtSetting, FitnessSetting
 
+
 def login_register(request):
     action = request.POST.get('action', 'login')
     register_active = action == 'register'
@@ -75,6 +76,7 @@ def login_register(request):
 def user_logout(request):
     logout(request)
     return redirect(reverse('login_register'))
+
 
 @login_required
 def child_selection(request):
@@ -318,8 +320,14 @@ def Setup(request, child_id=None):
                 chat_form.is_valid(), sgame_form.is_valid(), fitness_form.is_valid(),
                 art_form.is_valid()]):
             general_setting = general_form.save(commit=False)
-            general_setting.bad_words = ', '.join(general_form.cleaned_data['bad_words_choices']) \
-                                        + ', ' + general_form.cleaned_data['custom_bad_words']
+            selected_bad_words = general_form.cleaned_data['bad_words_choices']
+            custom_bad_words = general_form.cleaned_data['custom_bad_words'].strip()
+            if custom_bad_words:
+                combined_bad_words = ', '.join(selected_bad_words + [custom_bad_words])
+            else:
+                combined_bad_words = ', '.join(selected_bad_words)
+
+            general_setting.bad_words = combined_bad_words
             general_setting.save()
 
             game_form.save()
@@ -437,11 +445,6 @@ def Report(request, child_id):
     victimtext = Textfile.objects.filter(title='victimtext').first()
     bullytext = Textfile.objects.filter(title='bullytext').first()
 
-    texts = Textfile.objects.prefetch_related('urls').filter(title__in=[
-        'What is Bully?', 'Impact of Bully.', 'Bully in Games.',
-        'What parents should do with Bully?',
-    ])
-
     context = {
         'child_id': child_id,
         'daily_chart_data': json.dumps(daily_chart_data, cls=DjangoJSONEncoder),
@@ -457,25 +460,7 @@ def Report(request, child_id):
         'victim_notifications_weekly': victim_notifications_weekly,
         'bullytext': bullytext,
         'victimtext': victimtext,
-        'texts': texts,
     }
-
-    if request.method == 'POST':
-        user_question = request.POST.get('userQuery')
-        # client = OpenAI(
-        #     api_key="sk-x9XIbhuccUypiLMq3mqfCiyBqnV0bExnkwUkz3eRxABfLhzd",
-        #     base_url="https://api.chatanywhere.cn/v1"
-        # )
-        client = OpenAI(api_key="sk-proj-XUrICV4CQdnOUA9xb636T3BlbkFJM1XukZRieCo69xQn7DNQ")
-        completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "user", "content": user_question},
-            ],
-        )
-        respond = completion.choices[0].message.content
-        return JsonResponse({'respond': respond})
-
     return render(request, 'App/Report.html', context)
 
 
@@ -591,9 +576,31 @@ def get_weekly_game_time_stacked_data(child):
 
 
 def AIinfo(request, child_id, fromtag):
+    texts = Textfile.objects.prefetch_related('urls').filter(title__in=[
+        'What is Bully?', 'Impact of Bully.', 'Bully in Games.',
+        'What parents should do with Bully?',
+    ])
+
+    if request.method == 'POST':
+        user_question = request.POST.get('userQuery')
+        # client = OpenAI(
+        #     api_key="sk-x9XIbhuccUypiLMq3mqfCiBqnV0bExnkwUkz3eRxABfLhzd",
+        #     base_url="https://api.chatanywhere.cn/v1"
+        # )
+        client = OpenAI(api_key="sk-proj-XUrICV4CQdnOUA9xb636T3BlbkFJM1XukZRieCo69xQn7DNQ")
+        completion = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": user_question},
+            ],
+        )
+        respond = completion.choices[0].message.content
+        return JsonResponse({'respond': respond})
+
     context = {
         'child_id': child_id,
-        'fromtag': fromtag
+        'fromtag': fromtag,
+        'texts': texts
     }
     return render(request, 'App/AIinfo.html', context)
 

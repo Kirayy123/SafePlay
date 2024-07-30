@@ -46,16 +46,21 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
                 Bad Word <br>(you don't want your children say in VR)</label>
-            <div class="col-sm-9">
-                <div class="row" style="margin-bottom: -10px; margin-left: 1px">
-                    <div class="col-12 mb-2">
-                        <input class="form-check-input" type="checkbox" id="selectAllBadWords">
-                        <label class="form-check-label" for="selectAllBadWords">
-                            Select All
-                        </label>
+            <div class="col-sm-9" style="padding-top: 15px">
+                <input class="form-check-input" type="checkbox" id="selectAllBadWords">
+                    <label class="form-check-label" for="selectAllBadWords">
+                        Select All standard
+                        <a href="https://en.wiktionary.org/wiki/Category:English_swear_words" target="_blank" style="font-size: small; color: rebeccapurple">
+                            English swear words from Wiktionary</a></label>
+                <div class="row" style="padding-top: 15px">
+                    <label class="col-4 d-flex align-items-center" style="font-size: 24px">
+                        Custom bad words: </label>
+                    <div class="col-5 d-flex align-items-center" style="font-size: 24px">
+                        {{ general_form.custom_bad_words }}
                     </div>
                 </div>
-                <div class="row">
+
+                <div class="row" style="display: none;">
                     <div class="col-12">
                         <div class="checkbox-wrapper">
                             {% for checkbox in general_form.bad_words_choices %}
@@ -66,20 +71,6 @@
                                 </div>
                             {% endfor %}
                         </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-sm-3">
-            </div>
-            <div class="col-sm-9">
-                <div class="row">
-                    <label class="col-4 d-flex align-items-center"
-                           style="font-size: 24px">
-                        Custom bad words: </label>
-                    <div class="col-2 d-flex align-items-center" style="font-size: 24px">
-                        {{ general_form.custom_bad_words }}
                     </div>
                 </div>
             </div>
@@ -394,15 +385,14 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-            const selectAllCheckbox = document.getElementById('selectAllBadWords');
-            const badWordCheckboxes = document.querySelectorAll('[name="bad_words_choices"]');
-
-            selectAllCheckbox.addEventListener('change', function() {
-                for (const checkbox of badWordCheckboxes) {
-                    checkbox.checked = this.checked;
-                }
-            });
+        const selectAllCheckbox = document.getElementById('selectAllBadWords');
+        const badWordCheckboxes = document.querySelectorAll('[name="bad_words_choices"]');
+        selectAllCheckbox.addEventListener('change', function() {
+            for (const checkbox of badWordCheckboxes) {
+                checkbox.checked = this.checked;
+            }
         });
+    });
 
     document.addEventListener("DOMContentLoaded", function() {
         const nav = document.querySelector('.floating-nav');
