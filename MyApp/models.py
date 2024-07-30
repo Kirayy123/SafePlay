@@ -161,6 +161,8 @@ class GeneralSetting(models.Model):
         ('badword', 'Notice when my child say bad words'),
         ('badword_from_other', 'Notice when others say bad words to my child')], default='all')
     daily_playtime = models.IntegerField(default=240)
+    daily_playtime_start = models.TimeField(default='08:00:00')
+    daily_playtime_end = models.TimeField(default='20:00:00')
 
 
 class GameSetting(models.Model):

@@ -127,7 +127,6 @@ class GeneralSettingForm(forms.ModelForm):
         required=False,
         label="Custom bad words"
     )
-
     urgent_notification = forms.ChoiceField(
         choices=[('app', 'Notice on APP'),
                  ('email', 'Email me'),
@@ -135,7 +134,6 @@ class GeneralSettingForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         label="How to notice"
     )
-
     what_notification = forms.ChoiceField(
         choices=[('all', 'Notice all notifications'),
                  ('bully', 'Notice when child bullying'),
@@ -145,11 +143,22 @@ class GeneralSettingForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         label="What to notice"
     )
+    daily_playtime_start = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
+        label="Daily Play Time Start",
+        initial="08:00"
+    )
+    daily_playtime_end = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
+        label="Daily Play Time End",
+        initial="20:00"
+    )
 
     class Meta:
         model = GeneralSetting
         fields = ['daily_playtime', 'bad_words_choices', 'custom_bad_words',
-                  'urgent_notification', 'what_notification']
+                  'urgent_notification', 'what_notification',
+                  'daily_playtime_start', 'daily_playtime_end']
 
     def __init__(self, *args, **kwargs):
         super(GeneralSettingForm, self).__init__(*args, **kwargs)
@@ -163,6 +172,8 @@ class GeneralSettingForm(forms.ModelForm):
                                 word.strip() not in dict(self.BAD_WORD_CHOICES)]
                 self.initial['custom_bad_words'] = ', '.join(custom_words)
             self.initial['daily_playtime'] = instance.daily_playtime
+            self.initial['daily_playtime_start'] = instance.daily_playtime_start.strftime('%H:%M')
+            self.initial['daily_playtime_end'] = instance.daily_playtime_end.strftime('%H:%M')
 
 
 Daily_TIME_CHOICES = [

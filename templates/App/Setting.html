@@ -37,6 +37,16 @@
             </div>
         </div>
         <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Allowed Playing Hours</label>
+            <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
+                <span style="margin-right: 10px;">From</span>
+                <span style="margin-right: 10px;">{{ general_form.daily_playtime_start }}</span>
+                <span style="margin-right: 10px;">To</span>
+                {{ general_form.daily_playtime_end }}
+            </div>
+        </div>
+        <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px">
                 Bad Word <br>(you don't want your children say in VR)</label>
             <div class="col-sm-9" style="padding-top: 15px">
