@@ -129,16 +129,27 @@ class GeneralSettingForm(forms.ModelForm):
     )
 
     urgent_notification = forms.ChoiceField(
-        choices=[('app', 'Just notice on APP'),
-                 ('bully', 'Email me when child is bullying'),
-                 ('victim', 'Email me when child is bullying victim')],
-        widget=forms.RadioSelect,
-        label="Email about urgent"
+        choices=[('app', 'Notice on APP'),
+                 ('email', 'Email me'),
+                 ('sms', 'SMS me')],
+        widget=forms.CheckboxSelectMultiple,
+        label="How to notice"
+    )
+
+    what_notification = forms.ChoiceField(
+        choices=[('all', 'Notice all notifications'),
+                 ('bully', 'Notice when child bullying'),
+                 ('victim', 'Notice when child is bullied'),
+                 ('badword', 'Notice when my child say bad words'),
+                 ('badword_from_other', 'Notice when others say bad words to my child')],
+        widget=forms.CheckboxSelectMultiple,
+        label="What to notice"
     )
 
     class Meta:
         model = GeneralSetting
-        fields = ['daily_playtime', 'bad_words_choices', 'custom_bad_words', 'urgent_notification']
+        fields = ['daily_playtime', 'bad_words_choices', 'custom_bad_words',
+                  'urgent_notification', 'what_notification']
 
     def __init__(self, *args, **kwargs):
         super(GeneralSettingForm, self).__init__(*args, **kwargs)

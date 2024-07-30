@@ -26,7 +26,9 @@ class Notification(models.Model):
         (0, 'Enter game'),
         (3, 'Exit game'),
         (1, 'Victim'),
-        (2, 'Bully')
+        (2, 'Bully'),
+        (4, 'bad word'),
+        (5, 'interaction')
     )
     type = models.IntegerField(choices=TYPE_CHOICES, default=0)
     processed = models.BooleanField(default=False)
@@ -149,9 +151,15 @@ class GeneralSetting(models.Model):
     child = models.OneToOneField(Child, on_delete=models.CASCADE, related_name='general_setting')
     bad_words = models.TextField(null=True, blank=True)
     urgent_notification = models.CharField(max_length=50, choices=[
-        ('app', 'Just notice on APP'),
-        ('bully', 'Email me when child is bullying'),
-        ('victim', 'Email me when child is bullying victim')], default='app')
+        ('app', 'Notice on APP'),
+        ('email', 'Email me'),
+        ('sms', 'SMS me')], default='app')
+    what_notification = models.CharField(max_length=50, choices=[
+        ('all', 'Notice all notifications'),
+        ('bully', 'Notice when child bullying'),
+        ('victim', 'Notice when child is bullied'),
+        ('badword', 'Notice when my child say bad words'),
+        ('badword_from_other', 'Notice when others say bad words to my child')], default='all')
     daily_playtime = models.IntegerField(default=240)
 
 
