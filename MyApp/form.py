@@ -70,10 +70,10 @@ class MyAccountForm(forms.ModelForm):
 
 class BullyProcessForm(forms.ModelForm):
     Measurement = [
-        ('ignore', 'No intervention'),
-        ('notice', 'BigBuddy verbal reminder of bad behavior'),
-        ('point', 'Set points to zero'),
-        ('exit', 'Exclude child from current session'),
+        ('No intervention', 'No intervention'),
+        ('BigBuddy verbal reminder of bad behavior', 'BigBuddy verbal reminder of bad behavior'),
+        ('Set points to zero', 'Set points to zero'),
+        ('Exclude child from current session', 'Exclude child from current session'),
     ]
     bmeasurement_choices = forms.MultipleChoiceField(
         choices=Measurement,
@@ -89,10 +89,10 @@ class BullyProcessForm(forms.ModelForm):
 
 class VictimProcessForm(forms.ModelForm):
     Measurement = [
-        ('ignore', 'No intervention'),
-        ('notice', 'BigBuddy verbal reminder of bad behavior'),
-        ('comfort', 'Comfort your child'),
-        ('exit', 'Stop your child from current session'),
+        ('No intervention', 'No intervention'),
+        ('BigBuddy verbal reminder of bad behavior', 'BigBuddy verbal reminder of bad behavior'),
+        ('Comfort your child', 'Comfort your child'),
+        ('Stop your child from current session', 'Stop your child from current session'),
     ]
     vmeasurement_choices = forms.MultipleChoiceField(
         choices=Measurement,
@@ -107,12 +107,11 @@ class VictimProcessForm(forms.ModelForm):
 
 
 class GeneralSettingForm(forms.ModelForm):
-    TIME_CHOICES = [(30, '30 minutes'), (60, '1 hours'), (90, '1.5 hours'),
+    TIME_CHOICES = [(30, '30 minutes'), (60, '1 hour'), (90, '1.5 hours'),
                     (120, '2 hours'), (180, '3 hours'), (240, '4 hours')]
     daily_playtime = forms.ChoiceField(choices=TIME_CHOICES, required=False)
     file_path = os.path.join(BASE_DIR, 'static', 'bad-words.txt')
     with open(file_path, "r") as file:
-        # with open("D:\\Python学习\\bad-words.txt", "r") as file:
         bad_words = [line.strip() for line in file if line.strip()]
     BAD_WORD_CHOICES = [(word, word) for word in bad_words]
 
@@ -127,22 +126,38 @@ class GeneralSettingForm(forms.ModelForm):
         required=False,
         label="Custom bad words"
     )
-    urgent_notification = forms.ChoiceField(
-        choices=[('app', 'Notice on APP'),
-                 ('email', 'Email me'),
-                 ('sms', 'SMS me')],
+    INTERVENTION_CHOICES = [
+        ('verbal', 'verbal reminders and educate'),
+        ('silence', 'silence bad words')]
+    bad_words_intervention = forms.MultipleChoiceField(
+        choices=INTERVENTION_CHOICES,
         widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Intervention Methods"
+    )
+    HOW_NOTIFICATION_CHOICE = [
+        ('app', 'Notice on APP'),
+        ('email', 'Email me'),
+        ('sms', 'SMS me')]
+    urgent_notification = forms.MultipleChoiceField(
+        choices=HOW_NOTIFICATION_CHOICE,
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
         label="How to notice"
     )
-    what_notification = forms.ChoiceField(
-        choices=[('all', 'Notice all notifications'),
-                 ('bully', 'Notice when child bullying'),
-                 ('victim', 'Notice when child is bullied'),
-                 ('badword', 'Notice when my child say bad words'),
-                 ('badword_from_other', 'Notice when others say bad words to my child')],
+    WHAT_NOTIFICATION_CHOICE = [
+        ('all', 'Notice all notifications'),
+        ('bully', 'Notice when child bullying'),
+        ('victim', 'Notice when child is bullied'),
+        ('badword', 'Notice when my child say bad words'),
+        ('badword_from_other', 'Notice when others say bad words to my child')]
+    what_notification = forms.MultipleChoiceField(
+        choices=WHAT_NOTIFICATION_CHOICE,
         widget=forms.CheckboxSelectMultiple,
+        required=False,
         label="What to notice"
     )
+
     daily_playtime_start = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
         label="Daily Play Time Start",
@@ -156,9 +171,9 @@ class GeneralSettingForm(forms.ModelForm):
 
     class Meta:
         model = GeneralSetting
-        fields = ['daily_playtime', 'bad_words_choices', 'custom_bad_words',
-                  'urgent_notification', 'what_notification',
-                  'daily_playtime_start', 'daily_playtime_end']
+        fields = ['daily_playtime', 'bad_words_choices', 'custom_bad_words', 'bad_words_intervention',
+                  'daily_playtime_start', 'daily_playtime_end',
+                  'what_notification', 'urgent_notification']
 
     def __init__(self, *args, **kwargs):
         super(GeneralSettingForm, self).__init__(*args, **kwargs)
@@ -171,6 +186,15 @@ class GeneralSettingForm(forms.ModelForm):
                 custom_words = [word.strip() for word in selected_bad_words if
                                 word.strip() not in dict(self.BAD_WORD_CHOICES)]
                 self.initial['custom_bad_words'] = ', '.join(custom_words)
+            if instance.bad_words_intervention:
+                self.initial['bad_words_intervention'] = [method.strip() for method in
+                                                          instance.bad_words_intervention.split(',')]
+            if instance.what_notification:
+                self.initial['what_notification'] = [method.strip() for method in
+                                                          instance.what_notification.split(',')]
+                if instance.urgent_notification:
+                    self.initial['urgent_notification'] = [method.strip() for method in
+                                                              instance.urgent_notification.split(',')]
             self.initial['daily_playtime'] = instance.daily_playtime
             self.initial['daily_playtime_start'] = instance.daily_playtime_start.strftime('%H:%M')
             self.initial['daily_playtime_end'] = instance.daily_playtime_end.strftime('%H:%M')

@@ -34,6 +34,14 @@ class Notification(models.Model):
     processed = models.BooleanField(default=False)
     processed_measures = models.TextField(null=True, blank=True)
     game_url = models.URLField(null=True, blank=True)
+    GAME_TYPE_CHOICES = (
+        (0, 'MultiPlayerGame'),
+        (1, 'SinglePlayerGame'),
+        (2, 'Education'),
+        (3, 'Art_Creativity'),
+        (4, 'Fitness'),
+        (5, 'Chat'))
+    game_type = models.IntegerField(choices=GAME_TYPE_CHOICES, default=0)
 
 
 class GameSession(models.Model):
@@ -150,19 +158,24 @@ class TextfileURL(models.Model):
 class GeneralSetting(models.Model):
     child = models.OneToOneField(Child, on_delete=models.CASCADE, related_name='general_setting')
     bad_words = models.TextField(null=True, blank=True)
-    urgent_notification = models.CharField(max_length=50, choices=[
-        ('app', 'Notice on APP'),
-        ('email', 'Email me'),
-        ('sms', 'SMS me')], default='app')
-    what_notification = models.CharField(max_length=50, choices=[
-        ('all', 'Notice all notifications'),
-        ('bully', 'Notice when child bullying'),
-        ('victim', 'Notice when child is bullied'),
-        ('badword', 'Notice when my child say bad words'),
-        ('badword_from_other', 'Notice when others say bad words to my child')], default='all')
+    bad_words_intervention = models.TextField(null=True, blank=True)
+    urgent_notification = models.TextField(null=True, blank=True)
+    what_notification = models.TextField(null=True, blank=True)
     daily_playtime = models.IntegerField(default=240)
     daily_playtime_start = models.TimeField(default='08:00:00')
     daily_playtime_end = models.TimeField(default='20:00:00')
+    INTERVENTION_CHOICES = [
+        ('verbal', 'verbal reminders and educate'),
+        ('silence', 'silence bad words')
+    ]
+
+    def bad_words_measures_display(self):
+        if not self.bad_words_intervention:
+            return ""
+        selected_interventions = self.bad_words_intervention.split(',')
+        intervention_dict = dict(self.INTERVENTION_CHOICES)
+        display_values = [intervention_dict.get(choice.strip(), choice.strip()) for choice in selected_interventions]
+        return ', '.join(display_values)
 
 
 class GameSetting(models.Model):
@@ -175,19 +188,22 @@ class GameSetting(models.Model):
         ('bully', 'Only Appear when child is bullying'),
         ('victim', 'Only Appear when child is bullying victim'),
         ('urgent', 'Only Appear when bully OR victim situations')], default='Always')
-    game_bully_action = models.TextField(
-        choices=[
+    GAME_Bully_ACTION_CHOICES = [
             ('exit', 'BigBuddy verbal reminders, set points to 0 AND exclude from the game'),
             ('point', 'BigBuddy verbal reminders AND set points to 0'),
             ('notice', 'BigBuddy verbal reminders and educate for bad behavior'),
-            ('ignore', 'No intervention')], default='exit')
-    game_victim_action = models.TextField(
-        choices=[
-            ('comfort', 'BigBuddy verbal notice, set points to 0 AND comfort child'),
-            ('point', 'BigBuddy verbal reminders AND set bully points to 0'),
-            ('notice', 'BigBuddy verbal notice about bad behavior'),
-            ('ignore', 'No intervention'), ], default='comfort')
-
+            ('ignore', 'No intervention')]
+    game_bully_action = models.TextField(choices=GAME_Bully_ACTION_CHOICES, default='exit')
+    GAME_Victim_ACTION_CHOICES = [
+        ('comfort', 'BigBuddy verbal notice, set points to 0 AND comfort child'),
+        ('point', 'BigBuddy verbal reminders AND set bully points to 0'),
+        ('notice', 'BigBuddy verbal notice about bad behavior'),
+        ('ignore', 'No intervention')]
+    game_victim_action = models.TextField(choices=GAME_Victim_ACTION_CHOICES, default='comfort')
+    def game_bully_action_display(self):
+        return dict(GameSetting.GAME_Bully_ACTION_CHOICES)[self.game_bully_action]
+    def game_victim_action_display(self):
+        return dict(GameSetting.GAME_Victim_ACTION_CHOICES)[self.game_victim_action]
 
 class EducationSetting(models.Model):
     child = models.OneToOneField(Child, on_delete=models.CASCADE, related_name='education_setting')
@@ -199,17 +215,22 @@ class EducationSetting(models.Model):
         ('bully', 'Only Appear when child is bullying'),
         ('victim', 'Only Appear when child is bullying victim'),
         ('urgent', 'Only Appear when bully OR victim situations')], default='Always')
-    edu_bully_action = models.TextField(
-        choices=[
+    EDU_Bully_ACTION_CHOICES = [
             ('exit', 'BigBuddy verbal reminders AND exclude from current session'),
             ('notice', 'BigBuddy verbal reminders and educate for bad behavior'),
-            ('ignore', 'No intervention')], default='exit')
-    edu_victim_action = models.TextField(
-        choices=[
+            ('ignore', 'No intervention')]
+    edu_bully_action = models.TextField(choices=EDU_Bully_ACTION_CHOICES, default='exit')
+    EDU_Victim_ACTION_CHOICES = [
             ('exit', 'BigBuddy verbal reminders, comfort child AND exclude bully from current session'),
             ('comfort', 'BigBuddy verbal notice AND comfort your child'),
             ('notice', 'BigBuddy verbal notice about bad behavior'),
-            ('ignore', 'No intervention'), ], default='comfort')
+            ('ignore', 'No intervention')]
+    edu_victim_action = models.TextField(
+        choices=EDU_Victim_ACTION_CHOICES, default='comfort')
+    def edu_bully_action_display(self):
+        return dict(EducationSetting.EDU_Bully_ACTION_CHOICES)[self.edu_bully_action]
+    def edu_victim_action_display(self):
+        return dict(EducationSetting.EDU_Victim_ACTION_CHOICES)[self.edu_victim_action]
 
 
 class ChatSetting(models.Model):
@@ -222,21 +243,25 @@ class ChatSetting(models.Model):
         ('bully', 'Only Appear when child is bullying'),
         ('victim', 'Only Appear when child is bullying victim'),
         ('urgent', 'Only Appear when bully OR victim situations')], default='Always')
-    chat_bully_action = models.TextField(
-        choices=[
+    CHAT_Bully_ACTION_CHOICES = [
             ('exit', 'BigBuddy verbal reminders AND stop current chat'),
             ('notice', 'BigBuddy verbal reminders and educate for bad behavior'),
-            ('ignore', 'No intervention')], default='exit')
-    chat_victim_action = models.TextField(
-        choices=[
+            ('ignore', 'No intervention')]
+    chat_bully_action = models.TextField(choices=CHAT_Bully_ACTION_CHOICES, default='exit')
+    CHAT_Victim_ACTION_CHOICES = [
             ('exit', 'BigBuddy verbal notice, comfort your child AND stop current chat'),
             ('comfort', 'BigBuddy verbal notice AND comfort your child'),
             ('notice', 'BigBuddy verbal notice about bad behavior'),
-            ('ignore', 'No intervention'), ], default='comfort')
+            ('ignore', 'No intervention'),]
+    chat_victim_action = models.TextField(choices=CHAT_Victim_ACTION_CHOICES, default='comfort')
     who_can_chat = models.TextField(
         choices=[
             ('friend', 'Friends only'),
             ('everyone', 'Everyone')], default='everyone')
+    def chat_bully_action_display(self):
+        return dict(ChatSetting.CHAT_Bully_ACTION_CHOICES)[self.chat_bully_action]
+    def chat_victim_action_display(self):
+        return dict(ChatSetting.CHAT_Victim_ACTION_CHOICES)[self.chat_victim_action]
 
 
 class SingleGameSetting(models.Model):

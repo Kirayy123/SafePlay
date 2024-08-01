@@ -79,6 +79,52 @@
             </div>
         </div>
 
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                Intervention Methods</label>
+            <div class="col-sm-9" style="font-size: 24px;">
+                <div class="checkbox-wrapper">
+                    {% for checkbox in general_form.bad_words_intervention %}
+                        <div class="form-check" style="font-size: 24px;">
+                            {{ checkbox.tag }}
+                            {{ checkbox.choice_label }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                What to Notice</label>
+            <div class="col-sm-9" style="font-size: 24px;">
+                <div class="checkbox-wrapper">
+                    {% for checkbox in general_form.what_notification %}
+                        <div class="form-check" style="font-size: 24px;">
+                            {{ checkbox.tag }}
+                            {{ checkbox.choice_label }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px">
+                How to Notice</label>
+            <div class="col-sm-9" style="font-size: 24px;">
+                <div class="checkbox-wrapper">
+                    {% for checkbox in general_form.urgent_notification %}
+                        <div class="form-check" style="font-size: 24px;">
+                            {{ checkbox.tag }}
+                            {{ checkbox.choice_label }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
 
 
         <div id="multiplayer-vr-games">

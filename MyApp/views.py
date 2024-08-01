@@ -85,13 +85,13 @@ def child_selection(request):
 
     time_limit = now() - timedelta(hours=4)
     Notification.objects.filter(
-        Q(child__parent=parent), Q(type__in=[1, 2]), processed=False, time__lte=time_limit
+        Q(child__parent=parent), Q(type__in=[1, 2, 4]), processed=False, time__lte=time_limit
     ).update(processed=True)
 
     urgent_notification = Notification.objects.none()
 
     for child in children:
-        notification = child.notifications.filter(Q(type=1) | Q(type=2), processed=False).order_by('-time')
+        notification = child.notifications.filter(Q(type=1) | Q(type=2) | Q(type=4), processed=False).order_by('-time')
         if notification.exists():
             urgent_notification = urgent_notification | notification
 
@@ -111,7 +111,7 @@ def fetch_urgent_notifications(request):
     urgent_notification = Notification.objects.none()
 
     for child in children:
-        notification = child.notifications.filter(Q(type=1) | Q(type=2), processed=False).order_by('-time')
+        notification = child.notifications.filter(Q(type=1) | Q(type=2) | Q(type=4), processed=False).order_by('-time')
         if notification.exists():
             urgent_notification = urgent_notification | notification
 
@@ -207,12 +207,50 @@ def fetch_notifications(request, child_id):
             gameurl = None
     else:
         gameurl = None
+
+    time_limit = now() - timedelta(hours=4)
+    notifications_to_process = notifications.filter(
+        processed_measures='1' or None, time__lte=time_limit
+    )
+
+    for notification in notifications_to_process:
+        action = ''
+        if notification.game_type == 0:   # MultiPlayerGame
+            settings = notification.child.game_setting
+            if notification.type == 2:
+                action = settings.game_bully_action_display()
+            elif notification.type == 1:
+                action = settings.game_victim_action_display()
+        elif notification.game_type == 2:  # Education
+            settings = notification.child.education_setting
+            if notification.type == 2:
+                action = settings.edu_bully_action_display()
+            elif notification.type == 1:
+                action = settings.edu_victim_action_display()
+        elif notification.game_type == 5:  # Chat
+            settings = notification.child.chat_setting
+            if notification.type == 2:
+                action = settings.chat_bully_action_display()
+            elif notification.type == 1:
+                action = settings.chat_victim_action_display()
+
+        if notification.type == 4:  # Bad word
+            settings = notification.child.general_setting
+            action = settings.bad_words_measures_display()
+
+        # Update processed measures and mark as processed
+        notification.processed_measures = action
+        notification.processed = True
+        notification.save()
+
     notifications_data = [{
         'name': notification.child.name,
         'time': notification.time.strftime("%Y-%m-%d %H:%M"),
         'type': notification.type,
         'text': notification.text,
         'processed': notification.processed,
+        'processed_measures': notification.processed_measures,
+        'game_url': notification.game_url,
         'id': notification.id,
     } for notification in notifications]
     return JsonResponse({'notifications': notifications_data, 'gameurl': gameurl})
@@ -328,6 +366,14 @@ def Setup(request, child_id=None):
                 combined_bad_words = ', '.join(selected_bad_words)
 
             general_setting.bad_words = combined_bad_words
+
+            selected_intervention_methods = general_form.cleaned_data['bad_words_intervention']
+            general_setting.bad_words_intervention = ', '.join(selected_intervention_methods)
+            selected_urgent_notification = general_form.cleaned_data['urgent_notification']
+            general_setting.urgent_notification = ', '.join(selected_urgent_notification)
+            selected_what_notification = general_form.cleaned_data['what_notification']
+            general_setting.what_notification = ', '.join(selected_what_notification)
+
             general_setting.save()
 
             game_form.save()
@@ -336,7 +382,6 @@ def Setup(request, child_id=None):
             sgame_form.save()
             art_form.save()
             fitness_form.save()
-
             return redirect(reverse('setting', args=[child_id]))
 
     else:
