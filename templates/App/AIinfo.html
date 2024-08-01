@@ -1,3 +1,144 @@
+{#{% extends 'App/base.html' %}#}
+{#{% load static %}#}
+{##}
+{#{% block title_block %}#}
+{#    BigBuddy#}
+{#{% endblock %}#}
+{##}
+{#{% block content %}#}
+{##}
+{#    <link href="{% static 'css/bigbuddy.css' %}" rel="stylesheet">#}
+{##}
+{#    <div class="floating-nav expanded">#}
+{#        <a href="#bully" class="nav-link">Learn Bully</a>#}
+{#        <a href="#bigbuddy" class="nav-link">Learn BigBuddy</a>#}
+{#    </div>#}
+{##}
+{#<div class="container mt-4">#}
+{#    <h2 style="color: rebeccapurple; font-weight: bolder; padding-bottom: 40px;">#}
+{#        {% if fromtag == 1 %}#}
+{#            <a href="{% url 'setting' child_id %}"#}
+{#               style="color: rebeccapurple; text-decoration: none;"#}
+{#               onmouseover="this.style.color='#7648E747'"#}
+{#               onmouseout="this.style.color='rebeccapurple'">#}
+{#                <i class="fas fa-arrow-left"></i></a>#}
+{#            Know About BigBuddy#}
+{#        {% elif fromtag == 0 %}#}
+{#            Bully and BigBuddy#}
+{#        {% endif %}</h2>#}
+{##}
+{#    <h4 id="bully"><strong>Learn about Bullying in Social VR</strong></h4>#}
+{#    <p>In social virtual reality (VR) environments, anonymity and immersion make bullying more severe and difficult to monitor. Effectively addressing this problem requires advanced technical tools and clear community guidelines to protect users and maintain safe virtual interaction spaces.</p>#}
+{#    <div>#}
+{#        {% for text in texts %}#}
+{#            <a href="#" class="text-title" data-bs-toggle="modal"#}
+{#               data-bs-target="#textModal{{ forloop.counter }}"#}
+{#               style="color: rebeccapurple; text-decoration: none;#}
+{#               transition: color 0.3s;"#}
+{#               onmouseover="this.style.textDecoration='underline';"#}
+{#               onmouseout="this.style.textDecoration='none'; this.style.color='rebeccapurple';">#}
+{#                | {{ text.title }}</a>#}
+{##}
+{#            <!-- modal for each text -->#}
+{#            <div class="modal fade" id="textModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="textModalLabel{{ forloop.counter }}" aria-hidden="true">#}
+{#                <div class="modal-dialog modal-dialog-scrollable modal-xl">#}
+{#                    <div class="modal-content">#}
+{#                        <div class="modal-header">#}
+{#                            <h5 class="modal-title" id="textModalLabel{{ forloop.counter }}">{{ text.title }}</h5>#}
+{#                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#                        </div>#}
+{#                        <div class="modal-body">#}
+{#                            {{ text.body|linebreaks }}#}
+{#                            {% if text.urls.all %}#}
+{#                                <div class="row">#}
+{#                                    <div class="col-3">#}
+{#                                        Refered Papers:#}
+{#                                    </div>#}
+{#                                    <div class="col-9 align-left">#}
+{#                                        <ul>#}
+{#                                            {% for url in text.urls.all %}#}
+{#                                                <li><a href="{{ url.url }}" target="_blank">{{ url.paper }}</a></li>#}
+{#                                            {% endfor %}#}
+{#                                        </ul>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{##}
+{#    <div class="container mt-4">#}
+{#        <form id="chat-form">#}
+{#            {% csrf_token %}#}
+{#            <label for="userQuery" class="form-label">What else you want to know? Type Your Question there:</label>#}
+{#            <div class="row">#}
+{#                <div class="mb-3 col-11">#}
+{#                    <input type="text" class="form-control" id="userQuery" name="userQuery" required>#}
+{#                </div>#}
+{#                <div class="col-1">#}
+{#                    <button type="button" class="btn" onclick="sendQuestion();"#}
+{#                            style="background-color: rebeccapurple; color: white;">#}
+{#                        Send</button>#}
+{#                </div>#}
+{#            </div>#}
+{#        </form>#}
+{#        <div class="mt-3">#}
+{#            <p>Response for your question:</p>#}
+{#            <div class="response-container"#}
+{#                 style="height: 300px; overflow-y: auto; border: 1px solid #ccc;">#}
+{#                <div id="chatResponse"></div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{#    <h4 style="padding-top: 30px" id="bigbuddy"><strong>Learn about BigBuddy</strong></h4>#}
+{#    <div class="row">#}
+{#        <div class="col-2" style="display: flex;justify-content: center; align-items: center;">#}
+{#            <img src="{% static 'image/bigbbudy.png' %}" alt="BigBuddy Logo" class="header-logo"#}
+{#             style="height: 240px; width: auto">#}
+{#        </div>#}
+{#        <div class="col-10">#}
+{#            <p><strong style="font-size: x-large; color: rebeccapurple;">BigBuddy</strong>#}
+{#                is a simulated AI supervision system designed for use in social virtual reality (Social VR) environments, especially for the safety and interaction supervision of child users. Big Buddy intervenes in disruptive behaviors that occur in social VR environments. For example, when someone breaks the rules of the game or harasses other players, Big Buddy takes actions such as resetting points, notifying the player's parents, or even removing the disruptor from the game.</p>#}
+{#        </div>#}
+{#    </div>#}
+{##}
+{#    <div>#}
+{#        <h5 style="color: rebeccapurple;"><strong>Example of the VR game scenario</strong></h5>#}
+{#        <div class="gallery">#}
+{#            <figure>#}
+{#                <img src="/static/image/bigbuddy_a.png" alt="Image 1">#}
+{#                <figcaption>(a)</figcaption>#}
+{#            </figure>#}
+{#            <figure>#}
+{#                <img src="/static/image/bigbuddy_b.png" alt="Image 2">#}
+{#                <figcaption>(b)</figcaption>#}
+{#            </figure>#}
+{#            <figure>#}
+{#                <img src="/static/image/bigbuddy_c.png" alt="Image 3">#}
+{#                <figcaption>(c)</figcaption>#}
+{#            </figure>#}
+{#            <figure>#}
+{#                <img src="/static/image/bigbuddy_d.png" alt="Image 4">#}
+{#                <figcaption>(d)</figcaption>#}
+{#            </figure>#}
+{#        </div>#}
+{#        <div> (a) Tower Building Game. (b) Provocative situation. (c) Big Buddy intervenes: points reset to 0, parents notified and exclusion. (d) Competitor appears punished.</div>#}
+{#    </div>#}
+{#    <div  style="padding-top: 30px">#}
+{#        <h5 style="color: rebeccapurple;"><strong>More about Bigbuddy (see references)</strong></h5>#}
+{#        <p><a href="{% url 'paper' 2 %}" target="_blank" style="font-size: small">#}
+{#            Big Buddy: A Simulated Embodied Moderating System to Mitigate Children’s Reaction to Provocative Situations within Social Virtual Reality </a><br>#}
+{#        <a href="{% url 'paper' 1 %}" target="_blank" style="font-size: small">#}
+{#            Big Buddy: Exploring Child Reactions and Parental Perceptions towards a Simulated Embodied Moderating System for Social Virtual Reality</a></p>#}
+{#    </div>#}
+{##}
+{#</div>#}
+
+
 {% extends 'App/base.html' %}
 {% load static %}
 
@@ -9,6 +150,11 @@
 
     <link href="{% static 'css/bigbuddy.css' %}" rel="stylesheet">
 
+    <div class="floating-nav expanded">
+        <a href="#bully" class="nav-link">Learn Bully</a>
+        <a href="#bigbuddy" class="nav-link">Learn BigBuddy</a>
+    </div>
+
 <div class="container mt-4">
     <h2 style="color: rebeccapurple; font-weight: bolder; padding-bottom: 40px;">
         {% if fromtag == 1 %}
@@ -19,57 +165,12 @@
                 <i class="fas fa-arrow-left"></i></a>
             Know About BigBuddy
         {% elif fromtag == 0 %}
-            Know About BigBuddy
+            Bully and BigBuddy
         {% endif %}</h2>
 
-
-    <div style="padding-bottom: 30px">
-    <p>Children face harassment in social VR, often unsupervised. "Big Buddy," an AI moderator, helps protect them. Post-intervention, children feel safer, and parents find it useful but still supervise.</p>
-    </div>
-
-    <div class="row">
-        <div class="col-2" style="display: flex;justify-content: center; align-items: center;">
-            <img src="{% static 'image/bigbbudy.png' %}" alt="BigBuddy Logo" class="header-logo"
-             style="height: 240px; width: auto">
-        </div>
-        <div class="col-10">
-            <p><strong style="font-size: x-large; color: rebeccapurple;">BigBuddy</strong>
-                is a simulated AI supervision system designed for use in social virtual reality (Social VR) environments, especially for the safety and interaction supervision of child users. Big Buddy intervenes in disruptive behaviors that occur in social VR environments. For example, when someone breaks the rules of the game or harasses other players, Big Buddy takes actions such as resetting points, notifying the player's parents, or even removing the disruptor from the game.</p>
-        </div>
-    </div>
-
+    <h4 id="bully"><strong>Learn about Bullying in Social VR</strong></h4>
+    <p>In social virtual reality (VR) environments, anonymity and immersion make bullying more severe and difficult to monitor. Effectively addressing this problem requires advanced technical tools and clear community guidelines to protect users and maintain safe virtual interaction spaces.</p>
     <div>
-        <h5 style="color: rebeccapurple;"><strong>Example of the VR game scenario</strong></h5>
-        <div class="gallery">
-            <figure>
-                <img src="/static/image/bigbuddy_a.png" alt="Image 1">
-                <figcaption>(a)</figcaption>
-            </figure>
-            <figure>
-                <img src="/static/image/bigbuddy_b.png" alt="Image 2">
-                <figcaption>(b)</figcaption>
-            </figure>
-            <figure>
-                <img src="/static/image/bigbuddy_c.png" alt="Image 3">
-                <figcaption>(c)</figcaption>
-            </figure>
-            <figure>
-                <img src="/static/image/bigbuddy_d.png" alt="Image 4">
-                <figcaption>(d)</figcaption>
-            </figure>
-        </div>
-        <div> (a) Tower Building Game. (b) Provocative situation. (c) Big Buddy intervenes: points reset to 0, parents notified and exclusion. (d) Competitor appears punished.</div>
-    </div>
-    <div  style="padding-top: 30px">
-        <h5 style="color: rebeccapurple;"><strong>More about Bigbuddy (see references)</strong></h5>
-        <p><a href="{% url 'paper' 2 %}" target="_blank" style="font-size: small">
-            Big Buddy: A Simulated Embodied Moderating System to Mitigate Children’s Reaction to Provocative Situations within Social Virtual Reality </a><br>
-        <a href="{% url 'paper' 1 %}" target="_blank" style="font-size: small">
-            Big Buddy: Exploring Child Reactions and Parental Perceptions towards a Simulated Embodied Moderating System for Social Virtual Reality</a></p>
-    </div>
-
-    <h4 style="padding-top: 30px"><strong>Learn More about Bullying</strong></h4>
-    <div style="padding-top: 30px">
         {% for text in texts %}
             <a href="#" class="text-title" data-bs-toggle="modal"
                data-bs-target="#textModal{{ forloop.counter }}"
@@ -128,10 +229,52 @@
         <div class="mt-3">
             <p>Response for your question:</p>
             <div class="response-container"
-                 style="height: 400px; overflow-y: auto; border: 1px solid #ccc;">
+                 style="height: 300px; overflow-y: auto; border: 1px solid #ccc;">
                 <div id="chatResponse"></div>
             </div>
         </div>
+    </div>
+
+    <h4 style="padding-top: 30px" id="bigbuddy"><strong>Learn about BigBuddy</strong></h4>
+    <div class="row">
+        <div class="col-2" style="display: flex;justify-content: center; align-items: center;">
+            <img src="{% static 'image/bigbbudy.png' %}" alt="BigBuddy Logo" class="header-logo"
+             style="height: 240px; width: auto">
+        </div>
+        <div class="col-10">
+            <p><strong style="font-size: x-large; color: rebeccapurple;">BigBuddy</strong>
+                is a simulated AI supervision system designed for use in social virtual reality (Social VR) environments, especially for the safety and interaction supervision of child users. Big Buddy intervenes in disruptive behaviors that occur in social VR environments. For example, when someone breaks the rules of the game or harasses other players, Big Buddy takes actions such as resetting points, notifying the player's parents, or even removing the disruptor from the game.</p>
+        </div>
+    </div>
+
+    <div>
+        <h5 style="color: rebeccapurple;"><strong>Example of the VR game scenario</strong></h5>
+        <div class="gallery">
+            <figure>
+                <img src="/static/image/bigbuddy_a.png" alt="Image 1">
+                <figcaption>(a)</figcaption>
+            </figure>
+            <figure>
+                <img src="/static/image/bigbuddy_b.png" alt="Image 2">
+                <figcaption>(b)</figcaption>
+            </figure>
+            <figure>
+                <img src="/static/image/bigbuddy_c.png" alt="Image 3">
+                <figcaption>(c)</figcaption>
+            </figure>
+            <figure>
+                <img src="/static/image/bigbuddy_d.png" alt="Image 4">
+                <figcaption>(d)</figcaption>
+            </figure>
+        </div>
+        <div> (a) Tower Building Game. (b) Provocative situation. (c) Big Buddy intervenes: points reset to 0, parents notified and exclusion. (d) Competitor appears punished.</div>
+    </div>
+    <div  style="padding-top: 30px">
+        <h5 style="color: rebeccapurple;"><strong>More about Bigbuddy (see references)</strong></h5>
+        <p><a href="{% url 'paper' 2 %}" target="_blank" style="font-size: small">
+            Big Buddy: A Simulated Embodied Moderating System to Mitigate Children’s Reaction to Provocative Situations within Social Virtual Reality </a><br>
+        <a href="{% url 'paper' 1 %}" target="_blank" style="font-size: small">
+            Big Buddy: Exploring Child Reactions and Parental Perceptions towards a Simulated Embodied Moderating System for Social Virtual Reality</a></p>
     </div>
 
 </div>
@@ -140,7 +283,7 @@
         function sendQuestion() {
            var userQuery = document.getElementById('userQuery').value;
            var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-           var endpoint = "{% url 'report' child_id %}";
+           var endpoint = "{% url 'bigbuddy' child_id 0 %}";
            var data = {
                'userQuery': userQuery,
                'csrfmiddlewaretoken': csrfToken
@@ -163,6 +306,36 @@
              });
         }
     </script>
+
+    <style>
+        .floating-nav {
+            position: fixed;
+            right: 20px;
+            top: 10%;
+            background-color: rgba(118, 72, 231, 0.32);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 100;
+            overflow: hidden;
+            transition: height 0.3s ease;
+            height: 40px;
+        }
+        .floating-nav.expanded {
+            height: auto
+        }
+        .floating-nav a {
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            margin: 5px 0;
+            padding: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .floating-nav a:hover {
+            background-color: rebeccapurple;
+        }
+    </style>
 
 {% endblock %}
 
