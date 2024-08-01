@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 style="color: rebeccapurple; font-weight: bolder; padding-bottom: 40px;">Notifications from the VR World</h2>
+    <h2 style="color: rebeccapurple; font-weight: bolder; padding-bottom: 40px;">Notifications [Current VR Status]</h2>
 
     <div style="padding-bottom: 20px">
         {% if gameurl %}
@@ -21,66 +21,68 @@
         {% endif %}
     </div>
 
-{#    <select id="notification-filter" class="form-select mb-4">#}
-{#        <option value="4">All Notifications</option>#}
-{#        <option value="0" {% if current_type == "0" or current_type == "3" %}selected{% endif %}>Normal</option>#}
-{#        <option value="1" {% if current_type == "1" %}selected{% endif %}>Victim</option>#}
-{#        <option value="2" {% if current_type == "2" %}selected{% endif %}>Bully</option>#}
-{#    </select>#}
 
     <!-- roll container -->
     <div style="height: 600px; overflow-y: auto; border: 1px solid #ccc; padding: 15px;">
-        {% for notification in notifications %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <h5 class="card-title"><strong>{{ notification.child.name }}</strong></h5>
+        {% if notifications %}
+            {% for notification in notifications %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <h5 class="card-title"><strong>{{ notification.child.name }}</strong></h5>
+                            </div>
+                            <div class="col-6 text-end">
+                                <h6 class="card-subtitle mb-2 text-muted">{{ notification.time|date:"Y-m-d H:i" }}</h6>
+                            </div>
                         </div>
-                        <div class="col-6 text-end">
-                            <h6 class="card-subtitle mb-2 text-muted">{{ notification.time|date:"Y-m-d H:i" }}</h6>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-8">
-                            <p class="card-text">
-                                {% if notification.type == 1 %}
-                                    <span style="font-weight: bold; color: #850000;">Victim!</span>
-                                {% elif notification.type == 2 %}
-                                    <span style="font-weight: bold; color: #850000;">Bully!</span>
-                                {% elif notification.type == 4 %}
-                                    <span style="font-weight: bold; color: #850000;">Bad Word!</span>
-                                {% elif notification.type == 0 %}
-                                    <span style="font-weight: bold;">Enter.</span>
-                                {% elif notification.type == 3 %}
-                                    <span style="font-weight: bold;">Exit.</span>
+                        <div class="row">
+                            <div class="col-8">
+                                <p class="card-text">
+                                    {% if notification.type == 1 %}
+                                        <span style="font-weight: bold; color: #850000;">Victim!</span>
+                                    {% elif notification.type == 2 %}
+                                        <span style="font-weight: bold; color: #850000;">Bully!</span>
+                                    {% elif notification.type == 4 %}
+                                        <span style="font-weight: bold; color: #850000;">Bad Word!</span>
+                                    {% elif notification.type == 0 %}
+                                        <span style="font-weight: bold;">Enter.</span>
+                                    {% elif notification.type == 3 %}
+                                        <span style="font-weight: bold;">Exit.</span>
+                                    {% endif %}
+                                    {% if notification.type == 0 %}
+                                        {{ notification.text }}
+                                    {% else %}
+                                        {{ notification.text }}
+                                    {% endif %}
+                                    {% if notification.type != 3 %}
+                                        <a href="{{ notification.game_url }}" target="_blank" style="color: rebeccapurple;">enter game activity</a>
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <div class="col-4 text-end">
+                                {% if notification.type != 3 and notification.type != 0 and notification.type != 5 and notification.processed == False %}
+                                    <a href="{% url 'urgentprocess' notification.id 1 %}" class="btn" style="background-color: rebeccapurple; color: white;">Click to Process</a>
                                 {% endif %}
-                                {% if notification.type == 0 %}
-                                    {{ notification.text }}
-                                {% else %}
-                                    {{ notification.text }}
-                                {% endif %}
-                                {% if notification.type != 3 %}
-                                    <a href="{{ notification.game_url }}" target="_blank" style="color: rebeccapurple;">enter game activity</a>
-                                {% endif %}
-                            </p>
+                            </div>
                         </div>
-                        <div class="col-4 text-end">
-                            {% if notification.type != 3 and notification.type != 0 and notification.type != 5 and notification.processed == False %}
-                                <a href="{% url 'urgentprocess' notification.id 1 %}" class="btn" style="background-color: rebeccapurple; color: white;">Click to Process</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12" style="padding-top: 10px">
-                            {% if notification.type != 3 and notification.type != 0 and notification.type != 5 and notification.processed == True %}
-                                <p style="color: gray">Processed by bigBuddy: {{ notification.processed_measures }}</p>
-                            {% endif %}
+                        <div class="row">
+                            <div class="col-12" style="padding-top: 10px">
+                                {% if notification.type != 3 and notification.type != 0 and notification.type != 5 and notification.processed == True %}
+                                    <p style="color: gray">Processed by bigBuddy: {{ notification.processed_measures }}</p>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
+            {% endfor %}
+        {% else %}
+            <div style="width: 100%; display: flex; align-items: center; justify-content: center; height: 100%;">
+                <div style="text-align: center; font-size: 1.5em; color: gray;">
+                    No activities today.
+                </div>
             </div>
-        {% endfor %}
+        {% endif %}
     </div>
 </div>
 
@@ -113,42 +115,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateNotifications(notifications) {
         let content = '';
-        notifications.forEach(function(notification) {
-            content += `<div class="card mb-3">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <h5 class="card-title"><strong>${notification.name}</strong></h5>
+        if (notifications.length === 0) {
+            content = `
+            <div style="width: 100%; display: flex; align-items: center; justify-content: center; height: 100%;">
+                <div style="text-align: center; font-size: 1.5em; color: gray;">
+                    No activities today.
+                </div>
+            </div>
+        `;
+        } else {
+            notifications.forEach(function (notification) {
+                content += `<div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h5 class="card-title"><strong>${notification.name}</strong></h5>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <h6 class="card-subtitle mb-2 text-muted">${notification.time}</h6>
+                                        </div>
                                     </div>
-                                    <div class="col-6 text-end">
-                                        <h6 class="card-subtitle mb-2 text-muted">${notification.time}</h6>
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <p class="card-text">
+                                                ${notification.type == 1 ? '<span style="font-weight: bold; color: #850000;">Victim!</span>' : ''}
+                                                ${notification.type == 2 ? '<span style="font-weight: bold; color: #850000;">Bully!</span>' : ''}
+                                                ${notification.type == 4 ? '<span style="font-weight: bold; color: #850000;">Bad Word!</span>' : ''}
+                                                ${notification.type == 0 ? '<span style="font-weight: bold;">Enter.</span>' : ''}
+                                                ${notification.type == 3 ? '<span style="font-weight: bold;">Exit.</span>' : ''}
+                                                ${notification.text}
+                                                ${notification.game_url ? `<a href="${notification.game_url}" target="_blank" style="color: rebeccapurple;">enter game activity</a>` : ''}
+                                            </p>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            ${(notification.type == 1 || notification.type == 2 || notification.type == 4) && !notification.processed ?
+                    `<a href="/urgentprocess/${notification.id}/1" class="btn" style="background-color: rebeccapurple; color: white;">Click to Process</a>` : ''}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12" style="padding-top: 10px">
+                                            ${notification.processed && (notification.type != 0 && notification.type != 3 && notification.type != 5) ? `<p style="color: gray">Processed by bigBuddy: ${notification.processed_measures}</p>` : ''}
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-8">
-                                        <p class="card-text">
-                                            ${notification.type == 1 ? '<span style="font-weight: bold; color: #850000;">Victim!</span>' : ''}
-                                            ${notification.type == 2 ? '<span style="font-weight: bold; color: #850000;">Bully!</span>' : ''}
-                                            ${notification.type == 4 ? '<span style="font-weight: bold; color: #850000;">Bad Word!</span>' : ''}
-                                            ${notification.type == 0 ? '<span style="font-weight: bold;">Enter.</span>' : ''}
-                                            ${notification.type == 3 ? '<span style="font-weight: bold;">Exit.</span>' : ''}
-                                            ${notification.text}
-                                            ${notification.game_url ? `<a href="${notification.game_url}" target="_blank" style="color: rebeccapurple;">enter game activity</a>` : ''}
-                                        </p>
-                                    </div>
-                                    <div class="col-4 text-end">
-                                        ${(notification.type == 1 || notification.type == 2 || notification.type == 4) && !notification.processed ?
-                                            `<a href="/urgentprocess/${notification.id}/1" class="btn" style="background-color: rebeccapurple; color: white;">Click to Process</a>` : ''}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12" style="padding-top: 10px">
-                                        ${notification.processed && (notification.type != 0 && notification.type != 3 && notification.type != 5) ? `<p style="color: gray">Processed by bigBuddy: ${notification.processed_measures}</p>` : ''}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
-        });
+                            </div>`;
+            });
+        }
         notificationContainer.innerHTML = content;
     }
 

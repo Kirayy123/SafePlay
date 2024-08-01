@@ -167,7 +167,11 @@ def Notifications(request, child_id=None):
     child = get_object_or_404(Child, pk=child_id, parent=request.user)
     notification_type = request.GET.get('type', None)
 
-    notifications = child.notifications.all().order_by('-time')
+    all_notifications = child.notifications.all().order_by('-time')
+
+    time_limit = now() - timedelta(hours=0.1)
+    notifications = all_notifications.filter(time__gte=time_limit)  # today's notification
+
     if notifications.exists():
         first_notification = notifications.first()
         if hasattr(first_notification, 'game_url'):
@@ -176,15 +180,19 @@ def Notifications(request, child_id=None):
             gameurl = None
     else:
         gameurl = None
-
-    if notification_type:
-        notification_type = int(notification_type)
-        if notification_type == 4:
-            pass
-        elif notification_type == 0 or notification_type == 3:
-            notifications = notifications.filter(type__in=[0, 3]).order_by('-time')
-        else:
-            notifications = notifications.filter(type=notification_type).order_by('-time')
+    # # filter by type
+    # if notification_type is not None:
+    #     notification_type = int(notification_type)
+    #     if notification_type == 6:  # filter all
+    #         notifications_by_type = all_notifications
+    #     elif notification_type == 1 or notification_type == 2 or notification_type == 4 or notification_type == 5:
+    #         notifications_by_type = all_notifications.filter(type__in=[1, 2, 4, 5]).order_by('-time')
+    #     elif notification_type == 0:
+    #         notifications_by_type = all_notifications.filter(type__in=[0, 3]).order_by('-time')
+    #     else:
+    #         notifications_by_type = all_notifications.filter(type=notification_type).order_by('-time')
+    # else:
+    #     notifications_by_type = all_notifications
 
     context = {
         'child_id': child_id,
@@ -198,7 +206,9 @@ def Notifications(request, child_id=None):
 @login_required
 def fetch_notifications(request, child_id):
     child = get_object_or_404(Child, pk=child_id, parent=request.user)
-    notifications = child.notifications.all().order_by('-time')
+    all_notifications = child.notifications.all().order_by('-time')
+    notifications = all_notifications.filter(time__gte=now() - timedelta(hours=0.1))  # today's notification
+
     if notifications.exists():
         first_notification = notifications.first()
         if hasattr(first_notification, 'game_url'):
@@ -215,7 +225,7 @@ def fetch_notifications(request, child_id):
 
     for notification in notifications_to_process:
         action = ''
-        if notification.game_type == 0:   # MultiPlayerGame
+        if notification.game_type == 0:  # MultiPlayerGame
             settings = notification.child.game_setting
             if notification.type == 2:
                 action = settings.game_bully_action_display()
