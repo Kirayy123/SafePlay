@@ -158,6 +158,7 @@ class TextfileURL(models.Model):
 class GeneralSetting(models.Model):
     child = models.OneToOneField(Child, on_delete=models.CASCADE, related_name='general_setting')
     bad_words = models.TextField(null=True, blank=True)
+    all_bad_words = models.BooleanField(default=True)
     bad_words_intervention = models.TextField(null=True, blank=True)
     urgent_notification = models.TextField(null=True, blank=True)
     what_notification = models.TextField(null=True, blank=True)

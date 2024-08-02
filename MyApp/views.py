@@ -1,4 +1,5 @@
 import json
+import os
 import random
 from datetime import datetime, timedelta
 from django.contrib import messages
@@ -21,6 +22,7 @@ from MyApp.form import LoginForm, RegisterForm, ChildForm, GeneralSettingForm, G
     VictimProcessForm, MyAccountForm
 from MyApp.models import Child, GameSession, Message, Notification, Textfile, GeneralSetting, GameSetting, \
     EducationSetting, ChatSetting, SingleGameSetting, ArtSetting, FitnessSetting
+from ParentalNotification.settings import BASE_DIR
 
 
 def login_register(request):
@@ -180,23 +182,14 @@ def Notifications(request, child_id=None):
             gameurl = None
     else:
         gameurl = None
-    # # filter by type
-    # if notification_type is not None:
-    #     notification_type = int(notification_type)
-    #     if notification_type == 6:  # filter all
-    #         notifications_by_type = all_notifications
-    #     elif notification_type == 1 or notification_type == 2 or notification_type == 4 or notification_type == 5:
-    #         notifications_by_type = all_notifications.filter(type__in=[1, 2, 4, 5]).order_by('-time')
-    #     elif notification_type == 0:
-    #         notifications_by_type = all_notifications.filter(type__in=[0, 3]).order_by('-time')
-    #     else:
-    #         notifications_by_type = all_notifications.filter(type=notification_type).order_by('-time')
-    # else:
-    #     notifications_by_type = all_notifications
+
+    if notification_type is not None:
+        all_notifications = all_notifications.filter(type=notification_type)
 
     context = {
         'child_id': child_id,
         'notifications': notifications,
+        'all_notifications': all_notifications,
         'current_type': notification_type,
         'gameurl': gameurl
     }
@@ -207,7 +200,7 @@ def Notifications(request, child_id=None):
 def fetch_notifications(request, child_id):
     child = get_object_or_404(Child, pk=child_id, parent=request.user)
     all_notifications = child.notifications.all().order_by('-time')
-    notifications = all_notifications.filter(time__gte=now() - timedelta(hours=0.1))  # today's notification
+    notifications = all_notifications.filter(time__gte=now() - timedelta(hours=24))  # today's notification
 
     if notifications.exists():
         first_notification = notifications.first()
@@ -263,7 +256,27 @@ def fetch_notifications(request, child_id):
         'game_url': notification.game_url,
         'id': notification.id,
     } for notification in notifications]
-    return JsonResponse({'notifications': notifications_data, 'gameurl': gameurl})
+
+    notification_type = request.GET.get('type', None)
+    all_notifications = child.notifications.all().order_by('-time')
+    if notification_type is not None:
+        all_notifications = all_notifications.filter(type=notification_type)
+
+    all_notifications_data = [
+        {
+            'id': n.id,
+            'name': n.child.name,
+            'time': n.time.strftime('%Y-%m-%d %H:%M'),
+            'type': n.type,
+            'text': n.text,
+            'game_url': n.game_url,
+            'processed': n.processed,
+            'processed_measures': n.processed_measures
+        } for n in all_notifications
+    ]
+    return JsonResponse({'notifications': notifications_data,
+                         'gameurl': gameurl,
+                         'all_notifications': all_notifications_data})
 
 
 @login_required
