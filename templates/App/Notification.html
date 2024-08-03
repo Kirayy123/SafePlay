@@ -14,7 +14,7 @@
 <div class="container mt-4">
     <h2 style="color: rebeccapurple; font-weight: bolder; padding-bottom: 40px;">Notifications</h2>
 
-    <h5 style="padding-bottom: 20px" id="current"><strong>Current Notifications (for today)</strong></h5>
+    <h5 style="padding-bottom: 20px" id="current"><strong>Current Notifications (within 24h)</strong></h5>
     <div style="padding-bottom: 20px">
         {% if gameurl %}
             <h6>Your child is in the game, click to enter
@@ -25,6 +25,10 @@
         {% else %}
             <h6>Your child is not in the game now.</h6>
         {% endif %}
+    </div>
+
+    <div id="communicationContainer">
+        <!-- New communication will be updated here -->
     </div>
 
 
@@ -179,6 +183,7 @@
             const notificationContainer = document.querySelector('div[style="height: 600px; overflow-y: auto; border: 1px solid #ccc; padding: 15px;"]');
             const all_notificationContainer = document.getElementById('allNotifications');
             const gameUrlContainer = document.querySelector('div[style="padding-bottom: 20px"]');
+            const communicationContainer = document.getElementById('communicationContainer');
 
             function refreshNotifications() {
                 fetch('{% url "fetch_notifications" child_id %}')
@@ -186,6 +191,8 @@
                     .then(data => {
                         updateGameUrl(data.gameurl);
                         updateNotifications(data.notifications);
+                        updateCommunication(data.new_communication);
+
                     })
                     .catch(error => console.error('Error:', error));
             }
@@ -214,6 +221,28 @@
                     gameContent = `<h6>Your child is not in the game now.</h6>`;
                 }
                 gameUrlContainer.innerHTML = gameContent;
+            }
+
+            function updateCommunication(new_communication) {
+                let communicationContent = '';
+        if (new_communication && new_communication.name) {
+            communicationContent = `<div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <div style="display: inline-block;">
+                                                    <h5 class="card-title" style="display: inline-block; margin: 0;"><strong>New Message from ${new_communication.name}.</strong></h5>
+                                                    <h6 class="card-subtitle mb-2 text-muted" style="display: inline-block; margin-left: 10px;">${new_communication.time}</h6>
+                                                </div>
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <a href="/communication/${new_communication.id}" class="btn" style="background-color: rebeccapurple; color: white;">Click for Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+        }
+        communicationContainer.innerHTML = communicationContent;
             }
 
             function updateNotifications(notifications) {

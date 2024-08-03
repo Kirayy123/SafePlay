@@ -211,7 +211,7 @@ def fetch_notifications(request, child_id):
     else:
         gameurl = None
 
-    time_limit = now() - timedelta(hours=4)
+    time_limit = now() - timedelta(hours=0.1)
     notifications_to_process = notifications.filter(
         processed_measures='1' or None, time__lte=time_limit
     )
@@ -274,9 +274,21 @@ def fetch_notifications(request, child_id):
             'processed_measures': n.processed_measures
         } for n in all_notifications
     ]
+    new_communication_obj = Message.objects.filter(child=child, time__gte=now() - timedelta(hours=24)).order_by(
+        '-time').first()
+    if new_communication_obj.tag == 1:
+        new_communication = {
+            'name': new_communication_obj.child.name,
+            'time': new_communication_obj.time.strftime('%Y-%m-%d %H:%M'),
+            'text': new_communication_obj.text,
+            'id': new_communication_obj.child.id
+        }
+    else:
+        new_communication = {}
     return JsonResponse({'notifications': notifications_data,
                          'gameurl': gameurl,
-                         'all_notifications': all_notifications_data})
+                         'all_notifications': all_notifications_data,
+                         'new_communication': new_communication})
 
 
 @login_required
