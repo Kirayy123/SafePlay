@@ -147,8 +147,8 @@ class GeneralSettingForm(forms.ModelForm):
     )
     WHAT_NOTIFICATION_CHOICE = [
         ('all', 'Notice all notifications'),
-        ('bully', 'Notice when child bullying'),
-        ('victim', 'Notice when child is bullied'),
+        ('bully', 'Notice when my child bullying'),
+        ('victim', 'Notice when my child is bullied'),
         ('badword', 'Notice when my child say bad words'),
         ('badword_from_other', 'Notice when others say bad words to my child')]
     what_notification = forms.MultipleChoiceField(

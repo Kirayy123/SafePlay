@@ -496,6 +496,9 @@ def Report(request, child_id):
     daily_victim_count = Notification.objects.filter(
         child=child, type=1, time__range=(today_min, today_max)
     ).count()
+    daily_badword_count = Notification.objects.filter(
+        child=child, type=4, time__range=(today_min, today_max)
+    ).count()
 
     week_min = today_min - timedelta(days=6)
     weekly_bully_count = Notification.objects.filter(
@@ -504,11 +507,16 @@ def Report(request, child_id):
     weekly_victim_count = Notification.objects.filter(
         child=child, type=1, time__range=(week_min, today_max)
     ).count()
+    weekly_badword_count = Notification.objects.filter(
+        child=child, type=4, time__range=(week_min, today_max)
+    ).count()
 
     bully_notifications_daily = Notification.objects.filter(child=child, type=2, time__range=(today_min, today_max))
     victim_notifications_daily = Notification.objects.filter(child=child, type=1, time__range=(today_min, today_max))
     bully_notifications_weekly = Notification.objects.filter(child=child, type=2, time__range=(week_min, today_max))
     victim_notifications_weekly = Notification.objects.filter(child=child, type=1, time__range=(week_min, today_max))
+    badword_notifications_daily = Notification.objects.filter(child=child, type=4, time__range=(today_min, today_max))
+    badword_notifications_weekly = Notification.objects.filter(child=child, type=4, time__range=(week_min, today_max))
 
     victimtext = Textfile.objects.filter(title='victimtext').first()
     bullytext = Textfile.objects.filter(title='bullytext').first()
@@ -522,10 +530,14 @@ def Report(request, child_id):
         'daily_victim_count': daily_victim_count,
         'weekly_bully_count': weekly_bully_count,
         'weekly_victim_count': weekly_victim_count,
+        'weekly_badword_count': weekly_badword_count,
+        'daily_badword_count': daily_badword_count,
         'bully_notifications_daily': bully_notifications_daily,
         'victim_notifications_daily': victim_notifications_daily,
         'bully_notifications_weekly': bully_notifications_weekly,
         'victim_notifications_weekly': victim_notifications_weekly,
+        'badword_notifications_daily': badword_notifications_daily,
+        'badword_notifications_weekly': badword_notifications_weekly,
         'bullytext': bullytext,
         'victimtext': victimtext,
     }

@@ -29,7 +29,7 @@
             <canvas id="dailyChart" width="800" height="400"></canvas>
             <div id="dailyCounts" class="row" style="padding-top: 20px; padding-bottom: 30px">
                 <div class="col-1"></div>
-                <div class="col-5 d-flex justify-content-between align-items-center">
+                <div class="col-3 d-flex justify-content-between align-items-center">
                     <p style="color: rebeccapurple; font-weight: bold; cursor: pointer;"
                        title="Click to see detailed bully instances"
                        onclick="showDetailsModal('bully_daily')">
@@ -37,13 +37,22 @@
                     </p>
                 </div>
 
-                <div class="col-6 d-flex justify-content-between align-items-center">
+                <div class="col-3 d-flex justify-content-between align-items-center">
                     <p style="color: rebeccapurple; font-weight: bold; cursor: pointer;"
                        title="Click to see detailed victim instances"
                        onclick="showDetailsModal('victim_daily')">
                         Victim Instances: {{ daily_victim_count }}
                     </p>
                 </div>
+
+                <div class="col-3 d-flex justify-content-between align-items-center">
+                    <p style="color: rebeccapurple; font-weight: bold; cursor: pointer;"
+                       title="Click to see detailed victim instances"
+                       onclick="showDetailsModal('badword_daily')">
+                        Badword Instances: {{ daily_badword_count }}
+                    </p>
+                </div>
+                <div class="col-2"></div>
             </div>
         </div>
 
@@ -59,20 +68,28 @@
 
             <div id="weeklyCounts" class="row" style="padding-top: 20px; padding-bottom: 30px">
                 <div class="col-1"></div>
-                <div class="col-5 d-flex justify-content-between align-items-center">
+                <div class="col-3 d-flex justify-content-between align-items-center">
                     <p style="color: rebeccapurple; font-weight: bold; cursor: pointer;"
                        title="Click to see detailed bully instances"
                        onclick="showDetailsModal('bully_weekly')">
                         Bully Instances: {{ weekly_bully_count }}
                     </p>
                 </div>
-                <div class="col-6 d-flex justify-content-between align-items-center">
+                <div class="col-3 d-flex justify-content-between align-items-center">
                     <p style="color: rebeccapurple; font-weight: bold; cursor: pointer;"
                        title="Click to see detailed victim instances"
                        onclick="showDetailsModal('victim_weekly')">
                         Victim Instances: {{ weekly_victim_count }}
                     </p>
                 </div>
+                <div class="col-3 d-flex justify-content-between align-items-center">
+                    <p style="color: rebeccapurple; font-weight: bold; cursor: pointer;"
+                       title="Click to see detailed bully instances"
+                       onclick="showDetailsModal('badword_weekly')">
+                        Badword Instances: {{ weekly_badword_count }}
+                    </p>
+                </div>
+                <div class="col-1"></div>
             </div>
         </div>
     </div>
@@ -162,6 +179,14 @@
                 body.innerHTML = '<p>No victim instances recorded.</p>';
             {% endfor %}
         }
+        else if (type === 'badword_daily') {
+            title.textContent = 'Detailed Badword';
+            {% for notification in badword_notifications_daily %}
+                body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong>{{ notification.text }}</p>';
+            {% empty %}
+                body.innerHTML = '<p>No badword instances recorded.</p>';
+            {% endfor %}
+        }
         else if (type === 'bully_weekly') {
             title.textContent = 'Detailed Bully';
             {% for notification in bully_notifications_weekly %}
@@ -176,6 +201,14 @@
                 body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong>{{ notification.text }}</p>';
             {% empty %}
                 body.innerHTML = '<p>No victim instances recorded.</p>';
+            {% endfor %}
+        }
+        else if (type === 'badword_weekly') {
+            title.textContent = 'Detailed Badword';
+            {% for notification in badword_notifications_weekly %}
+                body.innerHTML += '<p><strong>{{ notification.time|date:"F d, H:i" }}, </strong>{{ notification.text }}</p>';
+            {% empty %}
+                body.innerHTML = '<p>No badword instances recorded.</p>';
             {% endfor %}
         }
         $('#detailsModal').modal('show');

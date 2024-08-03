@@ -33,7 +33,7 @@
         <div class="row mb-3" >
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                    title="This setting allows you to limit the amount of time your child can play VR each day. Once the set time is exceeded, the child's perspective in the VR glasses will not be displayed.">
-                Daily VR Play Time </label>
+                Daily VR Play Time <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ general_form.daily_playtime }}
             </div>
@@ -41,7 +41,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                 title="This setting specifies the time frame your child can play VR. You can set start and end time limits for their VR activities.">
-                Allowed Playing Hours</label>
+                Allowed Playing Hours <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 <span style="margin-right: 10px;">From</span>
                 <span style="margin-right: 10px;">{{ general_form.daily_playtime_start }}</span>
@@ -52,12 +52,12 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                 title="This setting helps manage and filter inappropriate language in VR. Once these words are detected in VR (either your child or someone else says them), they will be silenced.">
-                Bad Word <br>(you don't want your children say in VR)</label>
+                Bad Word <i class="fa-solid fa-circle-info"></i><br>(you don't want your children say in VR) </label>
             <div class="col-sm-9" style="padding-top: 15px">
                 <input class="form-check-input" type="checkbox" id="selectAllBadWords">
                     <label class="form-check-label" for="selectAllBadWords">
                         Select All standard
-                        <a href="https://en.wiktionary.org/wiki/Category:English_swear_words" target="_blank" style="font-size: small; color: rebeccapurple">
+                        <a href="https://en.wikipedia.org/wiki/Category:English_profanity" target="_blank" style="font-size: small; color: rebeccapurple">
                             English swear words from Wiktionary</a></label>
                 <div class="row" style="padding-top: 15px">
                     <label class="col-4 d-flex align-items-center" style="font-size: 24px">
@@ -86,7 +86,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
              title="This setting defines how the SafePlay app should intervene when bad words are detected. When a badword situation is detected in VR and you are unable to handle it in time, Big Buddy will handle it according to your presets.">
-                Bad Word Interventions</label>
+                Bad Word Interventions <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9" style="font-size: 24px;">
                 <div class="checkbox-wrapper">
                     {% for checkbox in general_form.bad_words_intervention %}
@@ -102,7 +102,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                 title="This setting allows you to choose which types of notifications you want to receive from the SafePlay app.">
-                What to Notice</label>
+                What to Notice <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9" style="font-size: 24px;">
                 <div class="checkbox-wrapper">
                     {% for checkbox in general_form.what_notification %}
@@ -118,7 +118,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                 title="This setting lets you select how you would like to receive notifications from the SafePlay app. ">
-                How to Notice</label>
+                How to Notice <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9" style="font-size: 24px;">
                 <div class="checkbox-wrapper">
                     {% for checkbox in general_form.urgent_notification %}
@@ -144,7 +144,7 @@
         <div class="row mb-3" >
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                    title="This setting allows you to limit the amount of time your child can play VR each day. Once the set time is exceeded, the child's perspective in the VR glasses will not be displayed.">
-                Daily Play Time </label>
+                Daily Play Time <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ game_form.game_daily_playtime }}
             </div>
@@ -152,7 +152,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                 title="This setting ensures that your child takes regular breaks during their VR play sessions. You can specify the duration of the breaks and the intervals at which they should occur. Once the set time is reached, BigBuddy will remind your child to end the activity and take a break.">
-                Break Time </label>
+                Break Time <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 <span style="margin-right: 10px;">Break</span>
                 {{ game_form.game_break_time }}
@@ -169,7 +169,7 @@
             <div class="col-sm-3">
                 <label class="col-form-label" style="font-weight: bold;font-size: 24px"
                        title="This setting controls when the BigBuddy AI will appear to monitor and intervene in your child's VR activities. ">
-                    Visible of BigBuddy</label><br>
+                    Visible of BigBuddy <i class="fa-solid fa-circle-info"></i> </label><br>
                 <a onclick="$('#robotModal').modal('show');" id="bigbuddy" title="BigBuddy Info" style="color: rebeccapurple; font-size: 20px;">
                     (know about BigBuddy)
                 </a>
@@ -181,7 +181,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                    title="This setting defines how the SafePlay app should intervene when bully are detected. When a bully situation is detected in VR and you are unable to handle it in time, Big Buddy will handle it according to your presets.">
-                Bully Intervention</label>
+                Bully Intervention <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ game_form.game_bully_action }}
             </div>
@@ -189,7 +189,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                    title="This setting defines how the SafePlay app should intervene when victim are detected. When a victim situation is detected in VR and you are unable to handle it in time, Big Buddy will handle it according to your presets.">
-                Victim Intervention</label>
+                Victim Intervention <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ game_form.game_victim_action }}
             </div>
@@ -202,7 +202,7 @@
         <div class="row mb-3" >
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                    title="This setting allows you to limit the amount of time your child can play VR each day. Once the set time is exceeded, the child's perspective in the VR glasses will not be displayed.">
-                Daily Play Time </label>
+                Daily Play Time <i class="fa-solid fa-circle-info"></i>  </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ sgame_form.sgame_daily_playtime }}
             </div>
@@ -210,7 +210,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                 title="This setting ensures that your child takes regular breaks during their VR play sessions. You can specify the duration of the breaks and the intervals at which they should occur. Once the set time is reached, BigBuddy will remind your child to end the activity and take a break.">
-                Break Time </label>
+                Break Time <i class="fa-solid fa-circle-info"></i>  </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 <span style="margin-right: 10px;">Break</span>
                 {{ sgame_form.sgame_break_time }}
@@ -227,7 +227,7 @@
             <div class="col-sm-3">
                 <label class="col-form-label" style="font-weight: bold;font-size: 24px"
                        title="This setting controls when the BigBuddy AI will appear to monitor and intervene in your child's VR activities. ">
-                    Visible of BigBuddy</label><br>
+                    Visible of BigBuddy <i class="fa-solid fa-circle-info"></i> </label><br>
                 <a onclick="$('#robotModal').modal('show');" id="bigbuddy" title="BigBuddy Info" style="color: rebeccapurple; font-size: 20px;">
                     (know about BigBuddy)
                 </a>
@@ -245,7 +245,7 @@
         <div class="row mb-3" >
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                 title="This setting allows you to limit the amount of time your child can play VR each day. Once the set time is exceeded, the child's perspective in the VR glasses will not be displayed.">
-                Daily Play Time </label>
+                Daily Play Time <i class="fa-solid fa-circle-info"></i>  </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ education_form.edu_daily_playtime }}
             </div>
@@ -253,7 +253,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                    title="This setting ensures that your child takes regular breaks during their VR play sessions. You can specify the duration of the breaks and the intervals at which they should occur. Once the set time is reached, BigBuddy will remind your child to end the activity and take a break.">
-                Break Time </label>
+                Break Time <i class="fa-solid fa-circle-info"></i>  </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 <span style="margin-right: 10px;">Break</span>
                 {{ education_form.edu_break_time }}
@@ -270,7 +270,7 @@
             <div class="col-sm-3">
                 <label class="col-form-label" style="font-weight: bold;font-size: 24px"
                        title="This setting controls when the BigBuddy AI will appear to monitor and intervene in your child's VR activities. ">
-                    Visible of BigBuddy</label><br>
+                    Visible of BigBuddy <i class="fa-solid fa-circle-info"></i> </label><br>
                 <a onclick="$('#robotModal').modal('show');" id="bigbuddy" title="BigBuddy Info" style="color: rebeccapurple; font-size: 20px;">
                     (know about BigBuddy)
                 </a>
@@ -282,7 +282,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                    title="This setting defines how the SafePlay app should intervene when bully are detected. When a bully situation is detected in VR and you are unable to handle it in time, Big Buddy will handle it according to your presets.">
-                Bully Intervention</label>
+                Bully Intervention <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ education_form.edu_bully_action }}
             </div>
@@ -290,7 +290,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                    title="This setting defines how the SafePlay app should intervene when victim are detected. When a victim situation is detected in VR and you are unable to handle it in time, Big Buddy will handle it according to your presets.">
-                Victim Intervention</label>
+                Victim Intervention <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ education_form.edu_victim_action }}
             </div>
@@ -303,7 +303,7 @@
         <div class="row mb-3" >
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                    title="This setting allows you to limit the amount of time your child can play VR each day. Once the set time is exceeded, the child's perspective in the VR glasses will not be displayed.">
-                Daily Play Time </label>
+                Daily Play Time <i class="fa-solid fa-circle-info"></i>  </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ chat_form.chat_daily_playtime }}
             </div>
@@ -311,7 +311,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                    title="This setting ensures that your child takes regular breaks during their VR play sessions. You can specify the duration of the breaks and the intervals at which they should occur. Once the set time is reached, BigBuddy will remind your child to end the activity and take a break.">
-                Break Time </label>
+                Break Time <i class="fa-solid fa-circle-info"></i>  </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 <span style="margin-right: 10px;font-size: 24px">Break</span>
                 {{ chat_form.chat_break_time }}
@@ -328,7 +328,7 @@
             <div class="col-sm-3">
                 <label class="col-form-label" style="font-weight: bold;font-size: 24px"
                        title="This setting controls when the BigBuddy AI will appear to monitor and intervene in your child's VR activities. ">
-                    Visible of BigBuddy</label><br>
+                    Visible of BigBuddy <i class="fa-solid fa-circle-info"></i> </label><br>
                 <a onclick="$('#robotModal').modal('show');" id="bigbuddy" title="BigBuddy Info" style="color: rebeccapurple; font-size: 20px;">
                     (know about BigBuddy)
                 </a>
@@ -340,7 +340,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                    title="This setting controls who your child is allowed to chat with in the VR environment.">
-                    Chat With</label>
+                    Chat With <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ chat_form.who_can_chat }}
             </div>
@@ -348,7 +348,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                    title="This setting defines how the SafePlay app should intervene when bully are detected. When a bully situation is detected in VR and you are unable to handle it in time, Big Buddy will handle it according to your presets.">
-                Bully Intervention</label>
+                Bully Intervention <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ chat_form.chat_bully_action }}
             </div>
@@ -356,7 +356,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold;font-size: 24px"
                    title="This setting defines how the SafePlay app should intervene when victim are detected. When a victim situation is detected in VR and you are unable to handle it in time, Big Buddy will handle it according to your presets.">
-                Victim Intervention</label>
+                Victim Intervention <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ chat_form.chat_victim_action }}
             </div>
@@ -370,7 +370,7 @@
         <div class="row mb-3" >
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                    title="This setting allows you to limit the amount of time your child can play VR each day. Once the set time is exceeded, the child's perspective in the VR glasses will not be displayed.">
-                Daily Play Time </label>
+                Daily Play Time <i class="fa-solid fa-circle-info"></i>  </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ art_form.art_daily_playtime }}
             </div>
@@ -378,7 +378,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                    title="This setting ensures that your child takes regular breaks during their VR play sessions. You can specify the duration of the breaks and the intervals at which they should occur. Once the set time is reached, BigBuddy will remind your child to end the activity and take a break.">
-                Break Time </label>
+                Break Time <i class="fa-solid fa-circle-info"></i>  </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 <span style="margin-right: 10px;">Break</span>
                 {{ art_form.art_break_time }}
@@ -395,7 +395,7 @@
             <div class="col-sm-3">
                 <label class="col-form-label" style="font-weight: bold;font-size: 24px"
                        title="This setting controls when the BigBuddy AI will appear to monitor and intervene in your child's VR activities. ">
-                    Visible of BigBuddy</label><br>
+                    Visible of BigBuddy <i class="fa-solid fa-circle-info"></i> </label><br>
                 <a onclick="$('#robotModal').modal('show');" id="bigbuddy" title="BigBuddy Info" style="color: rebeccapurple; font-size: 20px;">
                     (know about BigBuddy)
                 </a>
@@ -413,7 +413,7 @@
         <div class="row mb-3" >
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                    title="This setting allows you to limit the amount of time your child can play VR each day. Once the set time is exceeded, the child's perspective in the VR glasses will not be displayed.">
-                Daily Play Time </label>
+                Daily Play Time <i class="fa-solid fa-circle-info"></i>  </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 {{ fitness_form.fitness_daily_playtime }}
             </div>
@@ -421,7 +421,7 @@
         <div class="row mb-3">
             <label class="col-sm-3 col-form-label" style="font-weight: bold; font-size: 24px"
                    title="This setting ensures that your child takes regular breaks during their VR play sessions. You can specify the duration of the breaks and the intervals at which they should occur. Once the set time is reached, BigBuddy will remind your child to end the activity and take a break.">
-                Break Time </label>
+                Break Time <i class="fa-solid fa-circle-info"></i> </label>
             <div class="col-sm-9 d-flex align-items-center" style="font-size: 24px">
                 <span style="margin-right: 10px;">Break</span>
                 {{ fitness_form.fitness_break_time }}
@@ -438,7 +438,7 @@
             <div class="col-sm-3">
                 <label class="col-form-label" style="font-weight: bold;font-size: 24px"
                        title="This setting controls when the BigBuddy AI will appear to monitor and intervene in your child's VR activities. ">
-                    Visible of BigBuddy</label><br>
+                    Visible of BigBuddy <i class="fa-solid fa-circle-info"></i> </label><br>
                 <a onclick="$('#robotModal').modal('show');" id="bigbuddy" title="BigBuddy Info" style="color: rebeccapurple; font-size: 20px;">
                     (know about BigBuddy)
                 </a>
