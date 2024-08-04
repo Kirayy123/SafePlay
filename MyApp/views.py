@@ -86,14 +86,15 @@ def child_selection(request):
     children = parent.children.all()
 
     time_limit = now() - timedelta(hours=4)
-    Notification.objects.filter(
-        Q(child__parent=parent), Q(type__in=[1, 2, 4]), processed=False, time__lte=time_limit
-    ).update(processed=True)
+    # Notification.objects.filter(
+    #     Q(child__parent=parent), Q(type__in=[1, 2, 4]), processed=False, time__lte=time_limit
+    # ).update(processed=True)
 
     urgent_notification = Notification.objects.none()
 
     for child in children:
-        notification = child.notifications.filter(Q(type=1) | Q(type=2) | Q(type=4), processed=False).order_by('-time')
+        notification = child.notifications.filter(Q(type=1) | Q(type=2) | Q(type=4), processed=False,
+                                                  time__lte=time_limit).order_by('-time')
         if notification.exists():
             urgent_notification = urgent_notification | notification
 
@@ -112,8 +113,11 @@ def fetch_urgent_notifications(request):
     children = parent.children.all()
     urgent_notification = Notification.objects.none()
 
+    time_limit = now() - timedelta(hours=0.1)
+
     for child in children:
-        notification = child.notifications.filter(Q(type=1) | Q(type=2) | Q(type=4), processed=False).order_by('-time')
+        notification = child.notifications.filter(Q(type=1) | Q(type=2) | Q(type=4), processed=False,
+                                                  time__lte=time_limit).order_by('-time')
         if notification.exists():
             urgent_notification = urgent_notification | notification
 
@@ -213,7 +217,7 @@ def fetch_notifications(request, child_id):
 
     time_limit = now() - timedelta(hours=0.1)
     notifications_to_process = notifications.filter(
-        processed_measures='1' or None, time__lte=time_limit
+        Q(processed=False) | Q(processed_measures='1' or None), time__lte=time_limit
     )
 
     for notification in notifications_to_process:
@@ -276,7 +280,7 @@ def fetch_notifications(request, child_id):
     ]
     new_communication_obj = Message.objects.filter(child=child, time__gte=now() - timedelta(hours=24)).order_by(
         '-time').first()
-    if new_communication_obj.tag == 1:
+    if new_communication_obj and new_communication_obj.tag == 1:
         new_communication = {
             'name': new_communication_obj.child.name,
             'time': new_communication_obj.time.strftime('%Y-%m-%d %H:%M'),
