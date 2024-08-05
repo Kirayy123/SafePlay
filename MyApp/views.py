@@ -187,13 +187,16 @@ def Notifications(request, child_id=None):
     else:
         gameurl = None
 
-    if notification_type is not None:
-        all_notifications = all_notifications.filter(type=notification_type)
+    if notification_type and notification_type.isdigit():
+        notification_type = int(notification_type)
+        ALL_notifications = all_notifications.filter(type=notification_type)
+    else:
+        ALL_notifications = all_notifications
 
     context = {
         'child_id': child_id,
         'notifications': notifications,
-        'all_notifications': all_notifications,
+        'all_notifications': ALL_notifications,
         'current_type': notification_type,
         'gameurl': gameurl
     }
@@ -263,8 +266,12 @@ def fetch_notifications(request, child_id):
 
     notification_type = request.GET.get('type', None)
     all_notifications = child.notifications.all().order_by('-time')
-    if notification_type is not None:
-        all_notifications = all_notifications.filter(type=notification_type)
+
+    if notification_type and notification_type.isdigit():
+        notification_type = int(notification_type)
+        ALL_notifications = all_notifications.filter(type=notification_type)
+    else:
+        ALL_notifications = all_notifications
 
     all_notifications_data = [
         {
@@ -276,7 +283,7 @@ def fetch_notifications(request, child_id):
             'game_url': n.game_url,
             'processed': n.processed,
             'processed_measures': n.processed_measures
-        } for n in all_notifications
+        } for n in ALL_notifications
     ]
     new_communication_obj = Message.objects.filter(child=child, time__gte=now() - timedelta(hours=24)).order_by(
         '-time').first()
